@@ -411,7 +411,10 @@ function renderPlan() {
   plan.meals.forEach(meal => {
     const mId = meal.id;
     const isOpen = STATE.openMeals[mId] !== false;
-    const mt = getAllItems(meal).reduce((acc,item)=>{ const m=calcItem(item); return {cal:acc.cal+m.cal,prot:acc.prot+m.prot,gluc:acc.gluc+m.gluc,lip:acc.lip+m.lip}; },{cal:0,prot:0,gluc:0,lip:0});
+    const mealItemsForHeader = meal.variantKey
+      ? (getM1(meal.variantKey, STATE.variantB[meal.variantKey] ? 'B' : 'A') || [])
+      : getAllItems(meal);
+    const mt = mealItemsForHeader.reduce((acc,item)=>{ const m=calcItem(item); return {cal:acc.cal+m.cal,prot:acc.prot+m.prot,gluc:acc.gluc+m.gluc,lip:acc.lip+m.lip}; },{cal:0,prot:0,gluc:0,lip:0});
 
     html += `<div class="meal-card" style="border-color:${meal.border}">
       <div class="meal-header" style="background:${meal.color}" onclick="toggleMeal('${mId}')">
