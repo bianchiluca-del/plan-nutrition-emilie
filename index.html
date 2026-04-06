@@ -226,12 +226,12 @@ const PLANS = {
     ]},
     { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8",
       subGroups:[
-        { label:"Option A — Whey", items:[
+        { label:"Option A", items:[
           { name:"Iso whey", qty:20, ref:100, unit:"g", cal:474, prot:92, gluc:1, lip:1 },
           { name:"1 Banane", qty:120, ref:100, unit:"g", cal:89, prot:1, gluc:23, lip:0 },
           { name:"3 Petit beurre ou speculos", qty:24, ref:100, unit:"g", cal:460, prot:7.9, gluc:75, lip:14 },
         ]},
-        { label:"Option B — Sere", items:[
+        { label:"Option B", items:[
           { ...SERE, qty:150, unit:"g" },
           { name:"Muesli", qty:50, ref:100, unit:"g", cal:474, prot:7.5, gluc:61, lip:8 },
         ]},
@@ -261,12 +261,12 @@ const PLANS = {
     ]},
     { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8",
       subGroups:[
-        { label:"Option A — Whey", items:[
+        { label:"Option A", items:[
           { name:"Iso whey", qty:20, ref:100, unit:"g", cal:474, prot:92, gluc:1, lip:1 },
           { name:"1 Banane", qty:120, ref:100, unit:"g", cal:89, prot:1, gluc:23, lip:0 },
           { name:"3 Petit beurre ou speculos", qty:24, ref:100, unit:"g", cal:460, prot:7.9, gluc:75, lip:14 },
         ]},
-        { label:"Option B — Sere", items:[
+        { label:"Option B", items:[
           { ...SERE, qty:150, unit:"g" },
           { name:"Muesli", qty:50, ref:100, unit:"g", cal:474, prot:7.5, gluc:61, lip:8 },
         ]},
@@ -328,11 +328,18 @@ const PLANS = {
           { ...COMPOTE, qty:100, unit:"g" },
         ]},
       ]},
-    { id:"m3", name:"Meal 3", time:"Collation", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8", items:[
-      { name:"Iso whey", qty:15, ref:100, unit:"g", cal:474, prot:92, gluc:1, lip:1 },
-      { name:"1 Banane", qty:120, ref:100, unit:"g", cal:89, prot:1, gluc:23, lip:0 },
-      { name:"Galettes de riz", qty:2, ref:1, unit:"pieces", cal:35, prot:0.8, gluc:7.5, lip:0.3 },
-    ]},
+    { id:"m3", name:"Meal 3", time:"Collation", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8",
+      subGroups:[
+        { label:"Option A", items:[
+          { name:"Iso whey", qty:15, ref:100, unit:"g", cal:474, prot:92, gluc:1, lip:1 },
+          { name:"1 Banane", qty:120, ref:100, unit:"g", cal:89, prot:1, gluc:23, lip:0 },
+          { name:"Galettes de riz", qty:2, ref:1, unit:"pieces", cal:35, prot:0.8, gluc:7.5, lip:0.3 },
+        ]},
+        { label:"Option B", items:[
+          { name:"1 Banane", qty:120, ref:100, unit:"g", cal:89, prot:1, gluc:23, lip:0 },
+          { name:"Galettes de riz", qty:2, ref:1, unit:"pieces", cal:35, prot:0.8, gluc:7.5, lip:0.3 },
+        ]},
+      ]},
     { id:"m4", name:"Meal 4", time:"Diner", color:"#e8f5e9", accent:"#2e7d32", border:"#a5d6a7", items:[
       { ...FEC, qty:200, unit:"g" },
       { ...POULET },
@@ -430,6 +437,14 @@ function renderPlan() {
           html += `<div class="food-row supplement"><div><span class="badge badge-suppl">SUPPL.</span><span class="food-name" style="color:#999">${s}</span><div class="food-qty" style="color:#ccc">dose prescrite</div></div></div>`;
         });
       }
+    } else if (meal.subGroups) {
+      meal.subGroups.forEach(g => {
+        html += `<div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 4px">${g.label}</div>`;
+        g.items.forEach(item => {
+          const m = calcItem(item);
+          html += `<div class="food-row"><div style="flex:1"><span class="food-name">${item.name}</span><div class="food-qty">${item.qty} ${item.unit||'g'}</div></div><div class="macros">${macroPill(m,true)}</div></div>`;
+        });
+      });
     } else
     (meal.items||[]).forEach(item => {
       if (item.isProtein) {
