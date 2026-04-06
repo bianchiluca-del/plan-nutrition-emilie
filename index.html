@@ -145,30 +145,78 @@ async function api(action, data) {
 let STATE = {
   tab: "plan", activePlan: "easyDay", suivi: {}, mensurations: [],
   calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
-  openDay: null, openMeals: {}, proteinSelections: {}, proteinPanels: {}, editingMens: null, addingMens: false,
+  openDay: null, openMeals: {}, proteinSelections: {}, proteinPanels: {}, variantB: {}, editingMens: null, addingMens: false,
 };
 
 const FEC = { name:"Feculents cuits au choix", ref:100, cal:115, prot:2.6, gluc:23, lip:0.9 };
 const LEG = { name:"Legumes ou crudites au choix", ref:100, cal:30, prot:1.2, gluc:4.5, lip:0.2 };
-const POULET = { name:"Filet de poulet", ref:100, cal:110, prot:22.2, gluc:1, lip:2 };
+const POULET = { name:"Filet de poulet", qty:150, ref:100, cal:110, prot:22.2, gluc:1, lip:2 };
 const COMPOTE = { name:"Compote sans sucre", ref:100, cal:57, prot:0.5, gluc:12.5, lip:0.3 };
-const HUILE = { name:"Huile d'olive (1 c.a.c.)", ref:1, cal:87, prot:0, gluc:0.1, lip:10 };
+const HUILE_C = { name:"Huile d'olive (1 c.a.c.)", qty:0.5, ref:1, cal:87, prot:0, gluc:0.1, lip:10 };
 const SERE = { name:"Sere maigre", ref:100, cal:67, prot:12, gluc:3.5, lip:0.3 };
 const CHOC = { name:"Chocolat 70%", ref:100, cal:572, prot:9, gluc:30, lip:40 };
 
+// Meal 1 options A et B
+const M1_A = [
+  { name:"Sere maigre", qty:150, ref:100, cal:67, prot:12, gluc:3.5, lip:0.3 },
+  { name:"Granola", qty:35, ref:100, cal:450, prot:9, gluc:60, lip:20 },
+  { name:"Sirop d'erable", qty:10, ref:100, cal:260, prot:0, gluc:67, lip:0 },
+  { name:"Beurre de cacahuete", qty:10, ref:100, cal:580, prot:25, gluc:20, lip:50 },
+  { name:"Framboise", qty:50, ref:100, cal:55, prot:1.2, gluc:12, lip:0.7 },
+];
+const M1_B = [
+  { name:"Oeuf entier", qty:1, ref:1, cal:74, prot:6.5, gluc:0.4, lip:5.1 },
+  { name:"Jambon sans nitrite", qty:35, ref:100, cal:120, prot:22, gluc:0, lip:3 },
+  { name:"Pain complet Harry's", qty:40, ref:100, cal:253, prot:7.7, gluc:41.7, lip:4.5 },
+  { name:"Cottage cheese", qty:60, ref:100, cal:95, prot:11, gluc:4, lip:4 },
+  { name:"1/2 Avocat", qty:90, ref:100, cal:160, prot:2, gluc:8, lip:14 },
+];
+const M1_A_HARD = [
+  { name:"Sere maigre", qty:150, ref:100, cal:67, prot:12, gluc:3.5, lip:0.3 },
+  { name:"Granola", qty:50, ref:100, cal:450, prot:9, gluc:60, lip:20 },
+  { name:"Sirop d'erable", qty:10, ref:100, cal:260, prot:0, gluc:67, lip:0 },
+  { name:"Beurre de cacahuete", qty:10, ref:100, cal:580, prot:25, gluc:20, lip:50 },
+  { name:"Framboise", qty:50, ref:100, cal:55, prot:1.2, gluc:12, lip:0.7 },
+];
+const M1_B_HARD = [
+  { name:"Oeuf entier", qty:1, ref:1, cal:74, prot:6.5, gluc:0.4, lip:5.1 },
+  { name:"Jambon sans nitrite", qty:35, ref:100, cal:120, prot:22, gluc:0, lip:3 },
+  { name:"Pain complet Harry's", qty:60, ref:100, cal:253, prot:7.7, gluc:41.7, lip:4.5 },
+  { name:"Cottage cheese", qty:60, ref:100, cal:95, prot:11, gluc:4, lip:4 },
+  { name:"1/2 Avocat", qty:90, ref:100, cal:160, prot:2, gluc:8, lip:14 },
+];
+const M1_A_POST = [
+  { name:"Sere maigre", qty:150, ref:100, cal:67, prot:12, gluc:3.5, lip:0.3 },
+  { name:"Granola", qty:35, ref:100, cal:450, prot:9, gluc:60, lip:20 },
+  { name:"Sirop d'erable", qty:10, ref:100, cal:260, prot:0, gluc:67, lip:0 },
+  { name:"Beurre de cacahuete", qty:10, ref:100, cal:580, prot:25, gluc:20, lip:50 },
+  { name:"Framboise", qty:50, ref:100, cal:55, prot:1.2, gluc:12, lip:0.7 },
+];
+const M1_B_POST = [
+  { name:"Oeuf entier", qty:1, ref:1, cal:74, prot:6.5, gluc:0.4, lip:5.1 },
+  { name:"Jambon sans nitrite", qty:35, ref:100, cal:100, prot:22, gluc:1, lip:3 },
+  { name:"Pain complet Harry's", qty:40, ref:100, cal:253, prot:7.7, gluc:41.7, lip:4.5 },
+  { name:"Carre frais 0%", qty:25, ref:100, cal:78, prot:17.5, gluc:1.5, lip:0.2 },
+  { name:"1/2 Avocat", qty:90, ref:100, cal:160, prot:2, gluc:8, lip:14 },
+];
+
+function getM1(planKey, variant) {
+  const maps = {
+    easyDay: { A: M1_A, B: M1_B },
+    hardDay: { A: M1_A_HARD, B: M1_B_HARD },
+
+    carbloading: { A: null, B: null },
+    cheatMeal: { A: null, B: null },
+  };
+  return maps[planKey] ? maps[planKey][variant] : null;
+}
+
 const PLANS = {
   easyDay: { label:"Easy Day", emoji:"🌿", meals:[
-    { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082", items:[
-      { ...SERE, qty:150, unit:"g" },
-      { name:"Granola", qty:35, unit:"g", ref:100, cal:450, prot:9, gluc:60, lip:20 },
-      { name:"Sirop d'erable", qty:10, unit:"g", ref:100, cal:260, prot:0, gluc:67, lip:0 },
-      { name:"Beurre de cacahuete", qty:10, unit:"g", ref:100, cal:580, prot:25, gluc:20, lip:50 },
-      { name:"Framboise", qty:50, unit:"g", ref:100, cal:55, prot:1.2, gluc:12, lip:0.7 },
-      { name:"Omega 3 3g", supplement:true },
-      { name:"Vitamine D3K2 1000 UI", supplement:true },
-      { name:"Creatine 3g", supplement:true },
-      { name:"Zinc bisglycinate 15mg", supplement:true },
-    ]},
+    { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082",
+      variantKey: "easyDay",
+      supplements: ["Omega 3 3g","Vitamine D3K2 1000 UI","Creatine 3g","Zinc bisglycinate 15mg"],
+    },
     { id:"m2", name:"Meal 2", time:"Dejeuner", color:"#e3f2fd", accent:"#1565c0", border:"#90caf9", items:[
       { ...FEC, qty:100, unit:"g" },
       { name:"Proteine au choix", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2, isProtein:true, opts:PROT_OPTS },
@@ -176,89 +224,61 @@ const PLANS = {
       { ...COMPOTE, qty:150, unit:"g" },
       { ...CHOC, qty:10, unit:"g" },
     ]},
-    { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8", items:[
-      { name:"Iso whey", qty:20, unit:"g", ref:100, cal:474, prot:92, gluc:1, lip:1 },
-      { name:"Banane", qty:120, unit:"g", ref:100, cal:89, prot:1, gluc:23, lip:0 },
-      { name:"3 Petit beurre ou speculos", qty:24, unit:"g", ref:100, cal:460, prot:7.9, gluc:75, lip:14 },
-    ]},
+    { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8",
+      subGroups:[
+        { label:"Option A — Whey", items:[
+          { name:"Iso whey", qty:20, ref:100, unit:"g", cal:474, prot:92, gluc:1, lip:1 },
+          { name:"1 Banane", qty:120, ref:100, unit:"g", cal:89, prot:1, gluc:23, lip:0 },
+          { name:"3 Petit beurre ou speculos", qty:24, ref:100, unit:"g", cal:460, prot:7.9, gluc:75, lip:14 },
+        ]},
+        { label:"Option B — Sere", items:[
+          { ...SERE, qty:150, unit:"g" },
+          { name:"Muesli", qty:50, ref:100, unit:"g", cal:474, prot:7.5, gluc:61, lip:8 },
+        ]},
+      ]},
     { id:"m4", name:"Meal 4", time:"Diner", color:"#e8f5e9", accent:"#2e7d32", border:"#a5d6a7", items:[
       { ...FEC, qty:100, unit:"g" },
       { name:"Proteine au choix", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2, isProtein:true, opts:PROT_OPTS },
       { ...LEG, qty:250, unit:"g" },
-      { ...HUILE, qty:0.5, unit:"c.a.c." },
+      { ...HUILE_C, unit:"c.a.c." },
       { ...COMPOTE, qty:150, unit:"g" },
     ]},
-    { id:"m5", name:"Meal 5", time:"Intra Training", color:"#fbe9e7", accent:"#bf360c", border:"#ffab91", items:[
+    { id:"m5", name:"Meal 5 — Intra Training", time:"Sauf easy jogg", color:"#fbe9e7", accent:"#bf360c", border:"#ffab91", items:[
       { name:"Electrolytes", supplement:true },
     ]},
   ]},
   hardDay: { label:"Hard Day", emoji:"💪", meals:[
-    { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082", items:[
-      { ...SERE, qty:150, unit:"g" },
-      { name:"Granola", qty:50, unit:"g", ref:100, cal:450, prot:9, gluc:60, lip:20 },
-      { name:"Sirop d'erable", qty:10, unit:"g", ref:100, cal:260, prot:0, gluc:67, lip:0 },
-      { name:"Beurre de cacahuete", qty:10, unit:"g", ref:100, cal:580, prot:25, gluc:20, lip:50 },
-      { name:"Framboise", qty:50, unit:"g", ref:100, cal:55, prot:1.2, gluc:12, lip:0.7 },
-      { name:"Omega 3 3g", supplement:true },
-      { name:"Vitamine D3K2 1000 UI", supplement:true },
-      { name:"Creatine 3g", supplement:true },
-      { name:"Zinc bisglycinate 15mg", supplement:true },
-    ]},
+    { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082",
+      variantKey: "hardDay",
+      supplements: ["Omega 3 3g","Vitamine D3K2 1000 UI","Creatine 3g","Zinc bisglycinate 15mg"],
+    },
     { id:"m2", name:"Meal 2", time:"Dejeuner", color:"#e3f2fd", accent:"#1565c0", border:"#90caf9", items:[
       { ...FEC, qty:150, unit:"g" },
-      { ...POULET, qty:150, unit:"g" },
+      { name:"Proteine au choix", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2, isProtein:true, opts:PROT_OPTS },
       { ...LEG, qty:250, unit:"g" },
       { ...COMPOTE, qty:150, unit:"g" },
       { ...CHOC, qty:20, unit:"g" },
     ]},
-    { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8", items:[
-      { name:"Iso whey", qty:20, unit:"g", ref:100, cal:474, prot:92, gluc:1, lip:1 },
-      { name:"Banane", qty:120, unit:"g", ref:100, cal:89, prot:1, gluc:23, lip:0 },
-      { name:"3 Petit beurre ou speculos", qty:24, unit:"g", ref:100, cal:460, prot:7.9, gluc:75, lip:14 },
-    ]},
+    { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8",
+      subGroups:[
+        { label:"Option A — Whey", items:[
+          { name:"Iso whey", qty:20, ref:100, unit:"g", cal:474, prot:92, gluc:1, lip:1 },
+          { name:"1 Banane", qty:120, ref:100, unit:"g", cal:89, prot:1, gluc:23, lip:0 },
+          { name:"3 Petit beurre ou speculos", qty:24, ref:100, unit:"g", cal:460, prot:7.9, gluc:75, lip:14 },
+        ]},
+        { label:"Option B — Sere", items:[
+          { ...SERE, qty:150, unit:"g" },
+          { name:"Muesli", qty:50, ref:100, unit:"g", cal:474, prot:7.5, gluc:61, lip:8 },
+        ]},
+      ]},
     { id:"m4", name:"Meal 4", time:"Diner", color:"#e8f5e9", accent:"#2e7d32", border:"#a5d6a7", items:[
       { ...FEC, qty:150, unit:"g" },
-      { ...POULET, qty:150, unit:"g" },
+      { name:"Proteine au choix", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2, isProtein:true, opts:PROT_OPTS },
       { ...LEG, qty:250, unit:"g" },
-      { ...HUILE, qty:0.5, unit:"c.a.c." },
+      { ...HUILE_C, unit:"c.a.c." },
       { ...COMPOTE, qty:150, unit:"g" },
     ]},
-    { id:"m5", name:"Meal 5", time:"Intra Training", color:"#fbe9e7", accent:"#bf360c", border:"#ffab91", items:[
-      { name:"Electrolytes", supplement:true },
-    ]},
-  ]},
-  postChir: { label:"Post Chirurgie", emoji:"🏥", meals:[
-    { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082", items:[
-      { ...SERE, qty:150, unit:"g" },
-      { name:"Granola", qty:35, unit:"g", ref:100, cal:450, prot:9, gluc:60, lip:20 },
-      { name:"Sirop d'erable", qty:10, unit:"g", ref:100, cal:260, prot:0, gluc:67, lip:0 },
-      { name:"Beurre de cacahuete", qty:10, unit:"g", ref:100, cal:580, prot:25, gluc:20, lip:50 },
-      { name:"Framboise", qty:50, unit:"g", ref:100, cal:55, prot:1.2, gluc:12, lip:0.7 },
-      { name:"Omega 3 3g", supplement:true },
-      { name:"Vitamine D3K2 1000 UI", supplement:true },
-      { name:"Creatine 3g", supplement:true },
-      { name:"Zinc bisglycinate 15mg", supplement:true },
-    ]},
-    { id:"m2", name:"Meal 2", time:"Dejeuner", color:"#e3f2fd", accent:"#1565c0", border:"#90caf9", items:[
-      { ...FEC, qty:100, unit:"g" },
-      { ...POULET, qty:150, unit:"g" },
-      { ...LEG, qty:250, unit:"g" },
-      { ...HUILE, qty:0.5, unit:"c.a.c." },
-    ]},
-    { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8", items:[
-      { ...SERE, qty:150, unit:"g" },
-      { ...CHOC, qty:20, unit:"g" },
-    ]},
-    { id:"m4", name:"Meal 4", time:"Diner", color:"#e8f5e9", accent:"#2e7d32", border:"#a5d6a7", items:[
-      { ...FEC, qty:100, unit:"g" },
-      { ...POULET, qty:150, unit:"g" },
-      { ...LEG, qty:250, unit:"g" },
-      { ...HUILE, qty:0.5, unit:"c.a.c." },
-      { ...COMPOTE, qty:100, unit:"g" },
-    ]},
-    { id:"m5", name:"Meal 5", time:"Intra Training", color:"#fbe9e7", accent:"#bf360c", border:"#ffab91", items:[
-      { name:"Maltodextrine", supplement:true },
-      { name:"Pepto Pro", supplement:true },
+    { id:"m5", name:"Meal 5 — Intra Training", time:"Sauf easy jogg", color:"#fbe9e7", accent:"#bf360c", border:"#ffab91", items:[
       { name:"Electrolytes", supplement:true },
     ]},
   ]},
@@ -271,46 +291,55 @@ const PLANS = {
       { name:"Zinc bisglycinate 15mg", supplement:true },
     ]},
     { id:"m2", name:"Meal 2", time:"Dejeuner", color:"#e3f2fd", accent:"#1565c0", border:"#90caf9", items:[
-      { ...POULET, qty:150, unit:"g" },
+      { ...POULET },
       { ...LEG, qty:250, unit:"g" },
     ]},
     { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8", items:[
       { ...SERE, qty:200, unit:"g" },
     ]},
-    { id:"m4", name:"Meal 4 — CHEAT MEAL", time:"Diner libre", color:"#fff3e0", accent:"#e65100", border:"#ffcc80", items:[
-      { name:"CHEAT MEAL — repas libre", cheat:true },
+    { id:"m4", name:"Meal 4 — CHEAT MEAL", time:"Repas libre", color:"#fff3e0", accent:"#e65100", border:"#ffcc80", items:[
+      { name:"CHEAT MEAL — repas libre !", cheat:true },
     ]},
     { id:"m5", name:"Meal 5", time:"Pas de training", color:"#f5f5f5", accent:"#9e9e9e", border:"#e0e0e0", items:[] },
   ]},
   carbloading: { label:"Carbloading", emoji:"⚡", meals:[
     { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082", items:[
       { ...SERE, qty:150, unit:"g" },
-      { name:"Miel", qty:15, unit:"g", ref:100, cal:300, prot:0.01, gluc:83, lip:0.5 },
-      { name:"Pain complet Harry's", qty:80, unit:"g", ref:100, cal:253, prot:7.7, gluc:41.7, lip:4.5 },
-      { name:"Confiture", qty:40, unit:"g", ref:100, cal:244, prot:0.5, gluc:59, lip:0.5 },
+      { name:"Miel", qty:15, ref:100, unit:"g", cal:300, prot:0.01, gluc:83, lip:0.5 },
+      { name:"Pain complet Harry's", qty:80, ref:100, unit:"g", cal:253, prot:7.7, gluc:41.7, lip:4.5 },
+      { name:"Confiture", qty:40, ref:100, unit:"g", cal:244, prot:0.5, gluc:59, lip:0.5 },
       { name:"Omega 3 3g", supplement:true },
       { name:"Vitamine D3K2 1000 UI", supplement:true },
       { name:"Creatine 3g", supplement:true },
       { name:"Zinc bisglycinate 15mg", supplement:true },
     ]},
-    { id:"m2", name:"Meal 2", time:"Dejeuner", color:"#e3f2fd", accent:"#1565c0", border:"#90caf9", items:[
-      { ...FEC, qty:150, unit:"g" },
-      { name:"Jambon maigre", qty:100, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2 },
-      { ...HUILE, qty:0.5, unit:"c.a.c." },
-      { ...COMPOTE, qty:100, unit:"g" },
-    ]},
+    { id:"m2", name:"Meal 2", time:"Dejeuner", color:"#e3f2fd", accent:"#1565c0", border:"#90caf9",
+      subGroups:[
+        { label:"Option A", items:[
+          { ...FEC, qty:200, unit:"g" },
+          { ...POULET },
+          { ...HUILE_C, unit:"c.a.c." },
+          { ...COMPOTE, qty:100, unit:"g" },
+        ]},
+        { label:"Option B", items:[
+          { ...FEC, qty:150, unit:"g" },
+          { name:"Jambon maigre", qty:100, ref:100, unit:"g", cal:110, prot:22.2, gluc:1, lip:2 },
+          { ...HUILE_C, unit:"c.a.c." },
+          { ...COMPOTE, qty:100, unit:"g" },
+        ]},
+      ]},
     { id:"m3", name:"Meal 3", time:"Collation", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8", items:[
-      { name:"Iso whey", qty:15, unit:"g", ref:100, cal:474, prot:92, gluc:1, lip:1 },
-      { name:"Banane", qty:120, unit:"g", ref:100, cal:89, prot:1, gluc:23, lip:0 },
-      { name:"Galettes de riz", qty:2, unit:"pieces", ref:1, cal:35, prot:0.8, gluc:7.5, lip:0.3 },
+      { name:"Iso whey", qty:15, ref:100, unit:"g", cal:474, prot:92, gluc:1, lip:1 },
+      { name:"1 Banane", qty:120, ref:100, unit:"g", cal:89, prot:1, gluc:23, lip:0 },
+      { name:"Galettes de riz", qty:2, ref:1, unit:"pieces", cal:35, prot:0.8, gluc:7.5, lip:0.3 },
     ]},
     { id:"m4", name:"Meal 4", time:"Diner", color:"#e8f5e9", accent:"#2e7d32", border:"#a5d6a7", items:[
-      { ...FEC, qty:150, unit:"g" },
-      { ...POULET, qty:150, unit:"g" },
-      { name:"Huile d'olive (1 c.a.s.)", qty:1, unit:"c.a.s.", ref:1, cal:87, prot:0, gluc:0.1, lip:10 },
+      { ...FEC, qty:200, unit:"g" },
+      { ...POULET },
+      { name:"Huile d'olive (1 c.a.s.)", qty:1, ref:1, unit:"c.a.s.", cal:87, prot:0, gluc:0.1, lip:10 },
       { ...COMPOTE, qty:200, unit:"g" },
     ]},
-    { id:"m5", name:"Meal 5", time:"Intra Training", color:"#fbe9e7", accent:"#bf360c", border:"#ffab91", items:[
+    { id:"m5", name:"Meal 5 — Intra Training", time:"Sauf easy jogg", color:"#fbe9e7", accent:"#bf360c", border:"#ffab91", items:[
       { name:"Electrolytes", supplement:true },
     ]},
   ]},
@@ -358,7 +387,10 @@ function showToast(msg) {
 function renderPlan() {
   const plan = PLANS[STATE.activePlan];
   const totals = plan.meals.reduce((acc,meal)=>{
-    getAllItems(meal).forEach(item=>{ const active = item.isProtein ? item.opts[STATE.proteinSelections[item.name+meal.id]||0] : item; const m=calcItem(active); acc.cal+=m.cal; acc.prot+=m.prot; acc.gluc+=m.gluc; acc.lip+=m.lip; }); return acc;
+    const items4total = meal.variantKey 
+      ? (getM1(meal.variantKey, STATE.variantB[meal.variantKey] ? 'B' : 'A') || [])
+      : getAllItems(meal);
+    items4total.forEach(item=>{ const active = item.isProtein ? item.opts[STATE.proteinSelections[item.name+meal.id]||0] : item; const m=calcItem(active); acc.cal+=m.cal; acc.prot+=m.prot; acc.gluc+=m.gluc; acc.lip+=m.lip; }); return acc;
   }, {cal:0,prot:0,gluc:0,lip:0});
 
   let html = `<div class="plan-btns">${Object.entries(PLANS).map(([k,p])=>`<button class="plan-btn ${STATE.activePlan===k?"active":""}" onclick="setPlan('${k}')">${p.emoji} ${p.label}</button>`).join("")}</div>
@@ -381,6 +413,24 @@ function renderPlan() {
       </div>
       <div class="meal-body ${isOpen?"open":""}">`;
 
+    // Handle variant meals (Meal 1 with option A/B)
+    if (meal.variantKey) {
+      const isB = STATE.variantB[meal.variantKey];
+      const variantItems = getM1(meal.variantKey, isB ? 'B' : 'A') || [];
+      html += `<div style="display:flex;gap:6px;margin-bottom:8px">
+        <button onclick="toggleVariant('${meal.variantKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${!isB?meal.accent:'#ddd'};background:${!isB?meal.color:'#fff'};color:${!isB?meal.accent:'#888'};font-size:12px;font-weight:700;cursor:pointer">🥛 Option A — Sere maigre</button>
+        <button onclick="toggleVariant('${meal.variantKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${isB?meal.accent:'#ddd'};background:${isB?meal.color:'#fff'};color:${isB?meal.accent:'#888'};font-size:12px;font-weight:700;cursor:pointer">🥚 Option B — Oeuf</button>
+      </div>`;
+      variantItems.forEach(item => {
+        const m = calcItem(item);
+        html += `<div class="food-row"><div style="flex:1"><span class="food-name">${item.name}</span><div class="food-qty">${item.qty} ${item.unit||'g'}</div></div><div class="macros">${macroPill(m,true)}</div></div>`;
+      });
+      if (meal.supplements) {
+        meal.supplements.forEach(s => {
+          html += `<div class="food-row supplement"><div><span class="badge badge-suppl">SUPPL.</span><span class="food-name" style="color:#999">${s}</span><div class="food-qty" style="color:#ccc">dose prescrite</div></div></div>`;
+        });
+      }
+    } else
     (meal.items||[]).forEach(item => {
       if (item.isProtein) {
         const key = item.name + mId;
@@ -611,6 +661,7 @@ function render() {
 function setTab(t) { STATE.tab=t; STATE.openDay=null; STATE._dayForm=null; render(); }
 function setPlan(k) { STATE.activePlan=k; render(); }
 function toggleMeal(id) { STATE.openMeals[id] = STATE.openMeals[id]===false ? true : false; render(); }
+function toggleVariant(planKey) { STATE.variantB[planKey] = !STATE.variantB[planKey]; render(); }
 function toggleProtein(key) { STATE.proteinPanels[key] = !STATE.proteinPanels[key]; render(); }
 function selectProtein(key,idx) { STATE.proteinSelections[key]=idx; render(); }
 function setCalMonth(m) { STATE.calMonth=m; STATE.openDay=null; STATE._dayForm=null; render(); }
