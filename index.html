@@ -145,12 +145,12 @@ async function api(action, data) {
 let STATE = {
   tab: "plan", activePlan: "easyDay", suivi: {}, mensurations: [],
   calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
-  openDay: null, openMeals: {}, proteinSelections: {}, proteinPanels: {}, variantB: {}, editingMens: null, addingMens: false,
+  openDay: null, openMeals: {}, proteinSelections: {}, proteinPanels: {}, variantB: {}, subGroupVariant: {}, editingMens: null, addingMens: false,
 };
 
 const FEC = { name:"Feculents cuits au choix", ref:100, cal:115, prot:2.6, gluc:23, lip:0.9 };
 const LEG = { name:"Legumes ou crudites au choix", ref:100, cal:30, prot:1.2, gluc:4.5, lip:0.2 };
-const POULET = { name:"Filet de poulet", qty:150, ref:100, cal:110, prot:22.2, gluc:1, lip:2 };
+const POULET = { name:"Filet de poulet", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2 };
 const COMPOTE = { name:"Compote sans sucre", ref:100, cal:57, prot:0.5, gluc:12.5, lip:0.3 };
 const HUILE_C = { name:"Huile d'olive (1 c.a.c.)", qty:0.5, ref:1, cal:87, prot:0, gluc:0.1, lip:10 };
 const SERE = { name:"Sere maigre", ref:100, cal:67, prot:12, gluc:3.5, lip:0.3 };
@@ -394,9 +394,16 @@ function showToast(msg) {
 function renderPlan() {
   const plan = PLANS[STATE.activePlan];
   const totals = plan.meals.reduce((acc,meal)=>{
-    const items4total = meal.variantKey 
-      ? (getM1(meal.variantKey, STATE.variantB[meal.variantKey] ? 'B' : 'A') || [])
-      : getAllItems(meal);
+    let items4total;
+    if (meal.variantKey) {
+      items4total = getM1(meal.variantKey, STATE.variantB[meal.variantKey] ? 'B' : 'A') || [];
+    } else if (meal.subGroups) {
+      const sgKey = STATE.activePlan + meal.id;
+      const sgVariant = STATE.subGroupVariant[sgKey] || "A";
+      items4total = (sgVariant === "A" ? meal.subGroups[0] : (meal.subGroups[1] || meal.subGroups[0])).items;
+    } else {
+      items4total = getAllItems(meal);
+    }
     items4total.forEach(item=>{ const active = item.isProtein ? item.opts[STATE.proteinSelections[item.name+meal.id]||0] : item; const m=calcItem(active); acc.cal+=m.cal; acc.prot+=m.prot; acc.gluc+=m.gluc; acc.lip+=m.lip; }); return acc;
   }, {cal:0,prot:0,gluc:0,lip:0});
 
@@ -411,9 +418,16 @@ function renderPlan() {
   plan.meals.forEach(meal => {
     const mId = meal.id;
     const isOpen = STATE.openMeals[mId] !== false;
-    const mealItemsForHeader = meal.variantKey
-      ? (getM1(meal.variantKey, STATE.variantB[meal.variantKey] ? 'B' : 'A') || [])
-      : getAllItems(meal);
+    let mealItemsForHeader;
+    if (meal.variantKey) {
+      mealItemsForHeader = getM1(meal.variantKey, STATE.variantB[meal.variantKey] ? 'B' : 'A') || [];
+    } else if (meal.subGroups) {
+      const sgKey2 = STATE.activePlan + mId;
+      const sgVar2 = STATE.subGroupVariant[sgKey2] || "A";
+      mealItemsForHeader = (sgVar2 === "A" ? meal.subGroups[0] : (meal.subGroups[1] || meal.subGroups[0])).items;
+    } else {
+      mealItemsForHeader = getAllItems(meal);
+    }
     const mt = mealItemsForHeader.reduce((acc,item)=>{ const m=calcItem(item); return {cal:acc.cal+m.cal,prot:acc.prot+m.prot,gluc:acc.gluc+m.gluc,lip:acc.lip+m.lip}; },{cal:0,prot:0,gluc:0,lip:0});
 
     html += `<div class="meal-card" style="border-color:${meal.border}">
@@ -441,12 +455,18 @@ function renderPlan() {
         });
       }
     } else if (meal.subGroups) {
-      meal.subGroups.forEach(g => {
-        html += `<div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px 4px">${g.label}</div>`;
-        g.items.forEach(item => {
-          const m = calcItem(item);
-          html += `<div class="food-row"><div style="flex:1"><span class="food-name">${item.name}</span><div class="food-qty">${item.qty} ${item.unit||'g'}</div></div><div class="macros">${macroPill(m,true)}</div></div>`;
-        });
+      const sgKey = STATE.activePlan + mId;
+      const sgVariant = STATE.subGroupVariant[sgKey] || "A";
+      const sgA = meal.subGroups[0];
+      const sgB = meal.subGroups[1];
+      html += `<div style="display:flex;gap:6px;margin-bottom:8px">
+        <button onclick="toggleSubGroup('${sgKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${sgVariant==='A'?meal.accent:'#ddd'};background:${sgVariant==='A'?meal.color:'#fff'};color:${sgVariant==='A'?meal.accent:'#888'};font-size:12px;font-weight:700;cursor:pointer">${sgA.label}</button>
+        <button onclick="toggleSubGroup('${sgKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${sgVariant==='B'?meal.accent:'#ddd'};background:${sgVariant==='B'?meal.color:'#fff'};color:${sgVariant==='B'?meal.accent:'#888'};font-size:12px;font-weight:700;cursor:pointer">${sgB ? sgB.label : ''}</button>
+      </div>`;
+      const selectedGroup = sgVariant === "A" ? sgA : (sgB || sgA);
+      selectedGroup.items.forEach(item => {
+        const m = calcItem(item);
+        html += `<div class="food-row"><div style="flex:1"><span class="food-name">${item.name}</span><div class="food-qty">${item.qty} ${item.unit||'g'}</div></div><div class="macros">${macroPill(m,true)}</div></div>`;
       });
     } else
     (meal.items||[]).forEach(item => {
@@ -679,6 +699,7 @@ function render() {
 function setTab(t) { STATE.tab=t; STATE.openDay=null; STATE._dayForm=null; render(); }
 function setPlan(k) { STATE.activePlan=k; render(); }
 function toggleMeal(id) { STATE.openMeals[id] = STATE.openMeals[id]===false ? true : false; render(); }
+function toggleSubGroup(key) { STATE.subGroupVariant[key] = STATE.subGroupVariant[key] === "B" ? "A" : "B"; render(); }
 function toggleVariant(planKey) { STATE.variantB[planKey] = !STATE.variantB[planKey]; render(); }
 function toggleProtein(key) { STATE.proteinPanels[key] = !STATE.proteinPanels[key]; render(); }
 function selectProtein(key,idx) { STATE.proteinSelections[key]=idx; render(); }
