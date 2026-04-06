@@ -418,8 +418,8 @@ function renderPlan() {
       const isB = STATE.variantB[meal.variantKey];
       const variantItems = getM1(meal.variantKey, isB ? 'B' : 'A') || [];
       html += `<div style="display:flex;gap:6px;margin-bottom:8px">
-        <button onclick="toggleVariant('${meal.variantKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${!isB?meal.accent:'#ddd'};background:${!isB?meal.color:'#fff'};color:${!isB?meal.accent:'#888'};font-size:12px;font-weight:700;cursor:pointer">🥛 Option A — Sere maigre</button>
-        <button onclick="toggleVariant('${meal.variantKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${isB?meal.accent:'#ddd'};background:${isB?meal.color:'#fff'};color:${isB?meal.accent:'#888'};font-size:12px;font-weight:700;cursor:pointer">🥚 Option B — Oeuf</button>
+        <button onclick="toggleVariant('${meal.variantKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${!isB?meal.accent:'#ddd'};background:${!isB?meal.color:'#fff'};color:${!isB?meal.accent:'#888'};font-size:12px;font-weight:700;cursor:pointer">Option A</button>
+        <button onclick="toggleVariant('${meal.variantKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${isB?meal.accent:'#ddd'};background:${isB?meal.color:'#fff'};color:${isB?meal.accent:'#888'};font-size:12px;font-weight:700;cursor:pointer">Option B</button>
       </div>`;
       variantItems.forEach(item => {
         const m = calcItem(item);
