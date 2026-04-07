@@ -775,7 +775,10 @@ async function loadAllData(showMessage = false) {
 }
 
 loadAllData(false);
-setInterval(() => loadAllData(false), 30000);
+setInterval(() => {
+  const formOpen = STATE.addingMens || STATE.editingMens || STATE.openDay;
+  if (!formOpen) loadAllData(false);
+}, 30000);
 </script>
 </body>
 </html>
