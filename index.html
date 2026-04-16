@@ -3,658 +3,781 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plan Alimentaire — Émilie</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+<title>Plan Alimentaire — Emilie</title>
 <style>
-:root {
-  --pink:    #e91e8c;
-  --pink-l:  #fce4ec;
-  --pink-d:  #ad1457;
-  --bg:      #fdf7fa;
-  --card:    #ffffff;
-  --border:  #f0dde8;
-  --text:    #2d1a2e;
-  --muted:   #9e7a8e;
-  --ok:      #2e7d32;
-  --ko:      #c62828;
-  --radius:  14px;
-  --shadow:  0 2px 12px rgba(233,30,140,.08);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Nunito Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-/* ── HEADER ── */
-header {
-  background: linear-gradient(135deg, var(--pink-d), var(--pink));
-  color: #fff; padding: 18px 20px 0;
-  position: sticky; top: 0; z-index: 100;
-  box-shadow: 0 2px 16px rgba(233,30,140,.25);
-}
-header h1 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.25rem; letter-spacing: -.3px; }
-header p  { font-size: .75rem; opacity: .8; margin-top: 2px; }
-nav { display: flex; gap: 2px; margin-top: 14px; }
-nav button {
-  flex: 1; background: transparent; border: none; color: rgba(255,255,255,.7);
-  font-family: 'Nunito', sans-serif; font-weight: 700; font-size: .82rem;
-  padding: 10px 4px; cursor: pointer; border-radius: 10px 10px 0 0;
-  transition: all .2s; letter-spacing: .2px;
-}
-nav button.active { background: var(--bg); color: var(--pink-d); }
-nav button:hover:not(.active) { background: rgba(255,255,255,.15); color: #fff; }
-
-/* ── LAYOUT ── */
-main { max-width: 680px; margin: 0 auto; padding: 18px 14px 80px; }
-section { display: none; }
-section.active { display: block; }
-
-/* ── CARDS ── */
-.card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
-  box-shadow: var(--shadow);
-}
-.card-title {
-  font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .9rem;
-  color: var(--pink-d); margin-bottom: 10px; display: flex;
-  align-items: center; gap: 7px;
-}
-
-/* ── PLAN SELECTOR ── */
-.plan-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-.plan-btn {
-  background: var(--card); border: 2px solid var(--border);
-  border-radius: 20px; padding: 7px 14px; cursor: pointer;
-  font-family: 'Nunito', sans-serif; font-weight: 700; font-size: .8rem;
-  color: var(--muted); transition: all .2s;
-}
-.plan-btn.active, .plan-btn:hover {
-  border-color: var(--pink); color: var(--pink-d);
-  background: var(--pink-l);
-}
-
-/* ── MEAL CARD ── */
-.meal-card {
-  border-radius: var(--radius); margin-bottom: 12px;
-  overflow: hidden; border: 1.5px solid;
-}
-.meal-header {
-  padding: 11px 14px; display: flex; justify-content: space-between;
-  align-items: center; font-family: 'Nunito', sans-serif; font-weight: 800;
-}
-.meal-header .meal-name { font-size: .9rem; }
-.meal-header .meal-time { font-size: .75rem; opacity: .75; }
-.meal-macros-bar {
-  padding: 6px 14px; font-size: .72rem; font-weight: 600;
-  display: flex; gap: 14px; flex-wrap: wrap; border-top: 1px solid rgba(0,0,0,.06);
-}
-.meal-items { padding: 10px 14px; background: #fff; }
-.item-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 5px 0; border-bottom: 1px solid #f5ecf0; font-size: .82rem;
-}
-.item-row:last-child { border-bottom: none; }
-.item-name { font-weight: 600; }
-.item-qty  { color: var(--muted); font-size: .78rem; }
-.item-cal  { font-weight: 700; color: var(--pink-d); font-size: .78rem; }
-.tag-suppl { background: #f3e5f5; color: #7b1fa2; border-radius: 8px; padding: 2px 7px; font-size: .7rem; font-weight: 700; }
-.subgroup-title { font-size: .72rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; padding: 8px 0 4px; }
-
-/* ── SUIVI ── */
-.date-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.date-nav button {
-  background: var(--card); border: 1.5px solid var(--border);
-  border-radius: 8px; width: 36px; height: 36px; cursor: pointer;
-  font-size: 1rem; color: var(--pink-d); font-weight: 700;
-}
-.date-nav input[type=date] {
-  flex: 1; border: 1.5px solid var(--border); border-radius: 8px;
-  padding: 7px 10px; font-family: 'Nunito Sans', sans-serif;
-  font-size: .9rem; color: var(--text); background: var(--card);
-}
-.toggle-row { display: flex; gap: 8px; margin-bottom: 10px; }
-.toggle-btn {
-  flex: 1; padding: 10px; border-radius: 10px; border: 2px solid var(--border);
-  font-family: 'Nunito', sans-serif; font-weight: 700; font-size: .82rem;
-  cursor: pointer; background: var(--card); color: var(--muted); transition: all .2s;
-}
-.toggle-btn.ok { background: #e8f5e9; border-color: var(--ok); color: var(--ok); }
-.toggle-btn.ko { background: #ffebee; border-color: var(--ko); color: var(--ko); }
-.form-row { margin-bottom: 12px; }
-.form-row label { display: block; font-weight: 700; font-size: .8rem; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
-.form-row input, .form-row textarea {
-  width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
-  padding: 9px 12px; font-family: 'Nunito Sans', sans-serif; font-size: .9rem;
-  color: var(--text); background: var(--card); transition: border .2s;
-}
-.form-row input:focus, .form-row textarea:focus { outline: none; border-color: var(--pink); }
-.form-row textarea { resize: vertical; min-height: 60px; }
-.btn-save {
-  width: 100%; padding: 13px; background: linear-gradient(135deg, var(--pink-d), var(--pink));
-  color: #fff; border: none; border-radius: 10px; font-family: 'Nunito', sans-serif;
-  font-weight: 800; font-size: .95rem; cursor: pointer; transition: opacity .2s;
-  letter-spacing: .3px;
-}
-.btn-save:hover { opacity: .9; }
-.btn-save:disabled { opacity: .5; cursor: default; }
-
-/* ── CALENDAR ── */
-.cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.cal-header button { background: none; border: 1.5px solid var(--border); border-radius: 8px; padding: 5px 10px; cursor: pointer; color: var(--pink-d); font-weight: 700; }
-.cal-header span { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .95rem; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-.cal-day-label { text-align: center; font-size: .7rem; font-weight: 700; color: var(--muted); padding: 4px 0; text-transform: uppercase; }
-.cal-day {
-  aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center;
-  justify-content: center; font-size: .78rem; font-weight: 700; cursor: pointer;
-  transition: all .15s; position: relative;
-}
-.cal-day.empty { background: transparent; cursor: default; }
-.cal-day.today { box-shadow: 0 0 0 2px var(--pink); }
-.cal-day.has-data.ok-ok { background: #c8e6c9; color: var(--ok); }
-.cal-day.has-data.ok-ko, .cal-day.has-data.ko-ok { background: #fff9c4; color: #f57f17; }
-.cal-day.has-data.ko-ko { background: #ffcdd2; color: var(--ko); }
-.cal-day:not(.empty):not(.has-data) { background: #f5ecf0; color: var(--muted); }
-.cal-day.selected { box-shadow: 0 0 0 2px var(--pink-d) !important; }
-
-/* ── MENSURATIONS ── */
-.mens-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.mens-field label { display: block; font-size: .75rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .3px; }
-.mens-field input {
-  width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
-  padding: 8px 10px; font-family: 'Nunito Sans', sans-serif; font-size: .88rem;
-  color: var(--text); background: var(--card); transition: border .2s;
-}
-.mens-field input:focus { outline: none; border-color: var(--pink); }
-.mens-table { width: 100%; border-collapse: collapse; font-size: .78rem; overflow-x: auto; display: block; }
-.mens-table th { background: var(--pink-l); color: var(--pink-d); font-weight: 800; padding: 7px 8px; text-align: left; white-space: nowrap; }
-.mens-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
-.mens-table tr:last-child td { border-bottom: none; }
-.btn-del { background: none; border: none; cursor: pointer; color: #ccc; font-size: 1rem; transition: color .15s; padding: 2px 5px; }
-.btn-del:hover { color: var(--ko); }
-
-/* ── STATS ── */
-.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-.stat-box { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 10px; text-align: center; }
-.stat-val { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--pink-d); }
-.stat-lbl { font-size: .7rem; color: var(--muted); font-weight: 600; margin-top: 2px; }
-
-/* ── TOAST ── */
-#toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: var(--pink-d); color: #fff; padding: 10px 22px; border-radius: 20px;
-  font-family: 'Nunito', sans-serif; font-weight: 700; font-size: .85rem;
-  opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 999;
-}
-#toast.show { opacity: 1; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f6fa; color: #1a1a2e; min-height: 100vh; }
+  .app { max-width: 760px; margin: 0 auto; padding: 16px 12px 40px; }
+  .header { margin-bottom: 14px; }
+  .header h1 { font-size: 20px; font-weight: 700; color: #1a1a2e; }
+  .header p  { font-size: 12px; color: #888; margin-top: 2px; }
+  .tabs { display: flex; border-bottom: 2px solid #e0e0e0; margin-bottom: 18px; }
+  .tab-btn { padding: 9px 18px; border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 600; color: #888; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+  .tab-btn.active { color: #c2185b; border-bottom-color: #c2185b; }
+  .plan-btns { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .plan-btn { flex: 1; min-width: 120px; padding: 10px; border-radius: 10px; border: 1.5px solid #ddd; background: #fff; cursor: pointer; font-size: 12px; font-weight: 700; color: #888; transition: all 0.15s; text-align: center; }
+  .plan-btn.active { border-color: #c2185b; background: #fce4ec; color: #c2185b; }
+  .macro-bar { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; background: #fce4ec; border-radius: 10px; padding: 10px; margin-bottom: 14px; }
+  .macro-cell { text-align: center; }
+  .macro-cell .lbl { font-size: 10px; color: #888; margin-bottom: 2px; }
+  .macro-cell .val { font-size: 16px; font-weight: 700; }
+  .meal-card { border-radius: 14px; border: 1.5px solid #ddd; background: #fff; overflow: hidden; margin-bottom: 10px; }
+  .meal-header { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; cursor: pointer; user-select: none; }
+  .meal-header h3 { font-size: 14px; font-weight: 700; margin-bottom: 1px; }
+  .meal-header small { font-size: 11px; opacity: 0.8; }
+  .meal-header .meal-kcal { font-size: 13px; font-weight: 700; }
+  .meal-header .chevron { font-size: 14px; transition: transform 0.2s; }
+  .meal-header .chevron.open { transform: rotate(180deg); }
+  .meal-body { padding: 8px; display: none; }
+  .meal-body.open { display: block; }
+  .food-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 8px; border: 0.5px solid #e8e8e8; background: #fff; margin-bottom: 3px; flex-wrap: wrap; gap: 5px; }
+  .food-row.supplement { background: #f8f8f8; }
+  .food-row.cheat { background: #fff8e1; border: 1.5px dashed #f57f17; text-align: center; justify-content: center; }
+  .food-name { font-size: 13px; font-weight: 500; }
+  .food-qty  { font-size: 11px; color: #999; margin-top: 1px; }
+  .badge { font-size: 9px; padding: 1px 5px; border-radius: 4px; font-weight: 600; margin-right: 4px; }
+  .badge-suppl { background: #f3e5f5; color: #6a1b9a; }
+  .macros { display: flex; gap: 3px; flex-wrap: wrap; }
+  .macro-pill { display: flex; flex-direction: column; align-items: center; border-radius: 5px; padding: 2px 6px; min-width: 36px; }
+  .macro-pill .ml { font-size: 9px; opacity: 0.75; }
+  .macro-pill .mv { font-size: 11px; font-weight: 700; }
+  .meal-total { display: flex; align-items: center; justify-content: flex-end; gap: 6px; border-top: 1px solid #eee; margin-top: 6px; padding-top: 6px; flex-wrap: wrap; }
+  .meal-total span { font-size: 10px; color: #999; }
+  .year-strip { display: flex; gap: 3px; margin-bottom: 14px; align-items: flex-end; }
+  .year-month { flex: 1; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .year-month .bar { width: 100%; height: 28px; border-radius: 4px; transition: all 0.15s; border: 2px solid transparent; }
+  .year-month .bar.active { border-color: #c2185b; }
+  .year-month .lbl { font-size: 9px; color: #aaa; }
+  .year-month .lbl.active { color: #c2185b; font-weight: 700; }
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .cal-nav button { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 5px 14px; cursor: pointer; font-size: 18px; color: #555; }
+  .cal-nav .cal-title h3 { font-size: 17px; font-weight: 700; text-align: center; }
+  .cal-nav .cal-title small { font-size: 11px; color: #999; display: block; text-align: center; }
+  .cal-stats { display: grid; grid-template-columns: repeat(5,1fr); gap: 5px; margin-bottom: 12px; }
+  .cal-stat { text-align: center; border-radius: 8px; padding: 6px 3px; }
+  .cal-stat .sl { font-size: 9px; opacity: 0.8; margin-bottom: 1px; }
+  .cal-stat .sv { font-size: 15px; font-weight: 700; }
+  .day-headers { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; margin-bottom: 3px; }
+  .day-hdr { text-align: center; font-size: 10px; font-weight: 700; color: #aaa; padding: 3px 0; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+  .cal-day { border-radius: 10px; border: 0.5px solid #e0e0e0; background: #fff; cursor: pointer; padding: 5px 3px 4px; min-height: 58px; display: flex; flex-direction: column; align-items: center; transition: all 0.1s; position: relative; }
+  .cal-day:hover { opacity: 0.85; }
+  .cal-day.today { border: 2.5px solid #c2185b; }
+  .cal-day.empty { pointer-events: none; background: transparent; border-color: transparent; }
+  .cal-day .day-num { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .cal-day.today .day-num { color: #c2185b; font-weight: 800; }
+  .cal-day .day-badges { display: flex; gap: 2px; justify-content: center; flex-wrap: wrap; margin-bottom: 1px; }
+  .cal-day .day-badge { font-size: 9px; font-weight: 700; }
+  .cal-day .day-cal { font-size: 9px; font-weight: 600; color: #e65100; }
+  .cal-day .day-add { font-size: 18px; color: #ccc; line-height: 1; }
+  .cal-day .note-dot { position: absolute; top: 3px; right: 5px; width: 6px; height: 6px; border-radius: 50%; background: #6a1b9a; }
+  .cal-legend { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; justify-content: center; }
+  .leg-item { display: flex; align-items: center; gap: 4px; }
+  .leg-box { width: 12px; height: 12px; border-radius: 3px; border: 1px solid; }
+  .leg-item span { font-size: 9px; color: #999; }
+  .day-panel { background: #fff; border-radius: 14px; border: 2px solid #c2185b; padding: 18px; margin-top: 14px; }
+  .day-panel .dp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .day-panel .dp-header h3 { font-size: 15px; font-weight: 700; color: #c2185b; }
+  .dp-close { background: #f0f0f0; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 13px; padding: 5px 12px; color: #555; }
+  .field-label { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .field-block { margin-bottom: 12px; }
+  .inp { width: 100%; padding: 9px 11px; border-radius: 9px; border: 1px solid #ddd; font-size: 14px; background: #fafafa; color: #1a1a2e; outline: none; font-family: inherit; }
+  .inp:focus { border-color: #c2185b; background: #fff; }
+  textarea.inp { resize: vertical; min-height: 62px; line-height: 1.5; }
+  .status-toggle { display: flex; gap: 6px; }
+  .st-btn { padding: 6px 12px; border-radius: 20px; border: 1.5px solid #ddd; background: transparent; cursor: pointer; font-size: 12px; font-weight: 600; color: #aaa; transition: all 0.12s; }
+  .st-btn.ok   { background: #e8f5e9; border-color: #81c784; color: #1b5e20; }
+  .st-btn.ko   { background: #ffebee; border-color: #ef9a9a; color: #b71c1c; }
+  .st-btn.none { background: #f0f0f0; border-color: #ccc; color: #666; }
+  .dp-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .btn-save   { flex: 2; padding: 12px; border-radius: 10px; border: none; background: #c2185b; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn-clear  { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #ef9a9a; background: #ffebee; color: #b71c1c; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-cancel { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #ddd; background: #f5f5f5; color: #555; font-size: 13px; cursor: pointer; }
+  .mens-summary { display: grid; grid-template-columns: repeat(2,1fr); gap: 6px; margin-bottom: 14px; }
+  .mens-stat { text-align: center; border-radius: 10px; padding: 9px 6px; }
+  .mens-stat .ml { font-size: 10px; opacity: 0.8; margin-bottom: 2px; }
+  .mens-stat .mv { font-size: 15px; font-weight: 700; }
+  .btn-add { width: 100%; padding: 11px; border-radius: 10px; border: 1.5px solid; background: transparent; font-size: 13px; font-weight: 700; cursor: pointer; margin-bottom: 12px; }
+  .mens-form { background: #f5f5f5; border-radius: 12px; padding: 14px; margin-bottom: 12px; border: 1.5px solid #f48fb1; }
+  .mens-form h4 { font-size: 13px; font-weight: 700; color: #c2185b; margin-bottom: 10px; }
+  .mens-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .mens-card { background: #fff; border-radius: 12px; border: 0.5px solid #e0e0e0; padding: 12px; margin-bottom: 8px; }
+  .mens-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .mens-card-header h4 { font-size: 14px; font-weight: 700; }
+  .mens-card-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; }
+  .mens-field-card { background: #f5f5f5; border-radius: 8px; padding: 6px 8px; text-align: center; }
+  .mens-field-card .fl { font-size: 9px; color: #999; margin-bottom: 1px; }
+  .mens-field-card .fv { font-size: 14px; font-weight: 700; }
+  .mens-field-card .fd { font-size: 9px; }
+  .btn-icon { font-size: 11px; padding: 3px 8px; border-radius: 6px; cursor: pointer; }
+  .btn-edit { border: 1px solid #ddd; background: #f5f5f5; color: #555; }
+  .btn-del  { border: 1px solid #ef9a9a; background: #ffebee; color: #b71c1c; }
+  .loader { text-align: center; padding: 60px 20px; color: #aaa; font-size: 14px; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #c2185b; color: #fff; padding: 10px 22px; border-radius: 30px; font-size: 13px; font-weight: 600; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 9999; }
+  .toast.show { opacity: 1; }
 </style>
 </head>
 <body>
-
-<header>
-  <h1>🌸 Plan Alimentaire — Émilie</h1>
-  <p id="header-date"></p>
-  <nav>
-    <button class="active" onclick="switchTab('plan',this)">🥗 Plans</button>
-    <button onclick="switchTab('suivi',this)">📅 Suivi</button>
-    <button onclick="switchTab('mensurations',this)">📏 Mesures</button>
-  </nav>
-</header>
-
-<main>
-
-<!-- ═══════════════════ PLAN ═══════════════════ -->
-<section id="tab-plan" class="active">
-  <div class="plan-grid" id="plan-selector"></div>
-  <div id="plan-content"><p style="color:var(--muted);text-align:center;padding:30px">Chargement des plans…</p></div>
-</section>
-
-<!-- ═══════════════════ SUIVI ═══════════════════ -->
-<section id="tab-suivi">
-
-  <div class="stats-row" id="stats-row">
-    <div class="stat-box"><div class="stat-val" id="stat-ok">–</div><div class="stat-lbl">Jours ✅ ✅</div></div>
-    <div class="stat-box"><div class="stat-val" id="stat-streak">–</div><div class="stat-lbl">Streak 🔥</div></div>
-    <div class="stat-box"><div class="stat-val" id="stat-avg">–</div><div class="stat-lbl">Moy. kcal</div></div>
-  </div>
-
-  <div class="card">
-    <div class="cal-header">
-      <button onclick="calPrev()">‹</button>
-      <span id="cal-title"></span>
-      <button onclick="calNext()">›</button>
-    </div>
-    <div class="cal-grid" id="cal-grid"></div>
-  </div>
-
-  <div class="card">
-    <div class="date-nav">
-      <button onclick="changeDay(-1)">‹</button>
-      <input type="date" id="suivi-date" onchange="loadDayForm()">
-      <button onclick="changeDay(1)">›</button>
-    </div>
-
-    <div class="form-row">
-      <label>Calories du jour</label>
-      <input type="number" id="suivi-cal" placeholder="ex : 1850" min="0" max="5000">
-    </div>
-
-    <div class="form-row">
-      <label>Alimentation</label>
-      <div class="toggle-row">
-        <button class="toggle-btn" id="btn-diet-ok" onclick="toggleDiet('ok')">✅ Respectée</button>
-        <button class="toggle-btn" id="btn-diet-ko" onclick="toggleDiet('ko')">❌ Écart</button>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <label>Entraînement</label>
-      <div class="toggle-row">
-        <button class="toggle-btn" id="btn-train-ok" onclick="toggleTrain('ok')">✅ Fait</button>
-        <button class="toggle-btn" id="btn-train-ko" onclick="toggleTrain('ko')">❌ Repos</button>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <label>Note alimentation</label>
-      <textarea id="suivi-comment-diet" placeholder="Détails, écarts, ressentis…"></textarea>
-    </div>
-
-    <div class="form-row">
-      <label>Note entraînement</label>
-      <textarea id="suivi-comment-train" placeholder="Séance, intensité, commentaires…"></textarea>
-    </div>
-
-    <button class="btn-save" onclick="saveDay()">💾 Enregistrer</button>
-  </div>
-
-</section>
-
-<!-- ═══════════════════ MENSURATIONS ═══════════════════ -->
-<section id="tab-mensurations">
-
-  <div class="card">
-    <div class="card-title">📏 Nouvelle mesure</div>
-    <div class="form-row">
-      <label>Date</label>
-      <input type="date" id="mens-date">
-    </div>
-    <div class="mens-grid">
-      <div class="mens-field"><label>Poids (kg)</label><input type="number" id="m-poids" step="0.1" placeholder="58.5"></div>
-      <div class="mens-field"><label>Poitrine (cm)</label><input type="number" id="m-poitrine" step="0.5" placeholder="92"></div>
-      <div class="mens-field"><label>Taille (cm)</label><input type="number" id="m-taille" step="0.5" placeholder="68"></div>
-      <div class="mens-field"><label>Nombril (cm)</label><input type="number" id="m-nombril" step="0.5" placeholder="70"></div>
-      <div class="mens-field"><label>Fesses (cm)</label><input type="number" id="m-fesses" step="0.5" placeholder="93"></div>
-      <div class="mens-field"><label>Cuisse D (cm)</label><input type="number" id="m-cuisseD" step="0.5" placeholder="52"></div>
-      <div class="mens-field"><label>Cuisse G (cm)</label><input type="number" id="m-cuisseG" step="0.5" placeholder="52"></div>
-      <div class="mens-field"><label>Genou D (cm)</label><input type="number" id="m-genouD" step="0.5" placeholder="35"></div>
-      <div class="mens-field"><label>Genou G (cm)</label><input type="number" id="m-genouG" step="0.5" placeholder="35"></div>
-    </div>
-    <br>
-    <button class="btn-save" onclick="saveMens()">💾 Enregistrer</button>
-  </div>
-
-  <div class="card">
-    <div class="card-title">📊 Historique</div>
-    <div style="overflow-x:auto">
-      <table class="mens-table" id="mens-table">
-        <thead><tr>
-          <th>Date</th><th>Poids</th><th>Poitrine</th><th>Taille</th>
-          <th>Nombril</th><th>Fesses</th><th>CuisseD</th><th>CuisseG</th>
-          <th>GenouD</th><th>GenouG</th><th></th>
-        </tr></thead>
-        <tbody id="mens-body"></tbody>
-      </table>
-    </div>
-  </div>
-
-</section>
-
-</main>
-<div id="toast"></div>
+<div class="app" id="app">
+  <div class="loader">Chargement des donnees...</div>
+</div>
+<div class="toast" id="toast">Enregistre ✓</div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbwMBrwud_ydIvfho4QVuaKo3HnAOroJ1C2b7jPG0esjmYAksnHX99uEDgpEutG6Ba7w/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwMBrwud_ydIvfho4QVuaKo3HnAOroJ1C2b7jPG0esjmYAksnHX99uEDgpEutG6Ba7w/exec";
 
-// ── STATE ──────────────────────────────────────────────────────────────────
-let plans = {}, suivi = {}, mensurations = [];
-let currentPlan = null;
-let dietState = null, trainState = null;
-let calYear, calMonth;
-
-// ── UTILS ─────────────────────────────────────────────────────────────────
-const today = () => new Date().toISOString().slice(0, 10);
-const fmt = (n) => n != null ? Number(n).toLocaleString('fr-FR') : '–';
-const fmtDate = (s) => s ? new Date(s + 'T12:00:00').toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}) : '–';
-
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+async function api(action, data) {
+  const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action, ...data }) });
+  return res.json();
 }
 
-async function apiFetch(params) {
-  const url = API + '?' + new URLSearchParams(params);
-  const r = await fetch(url);
-  return r.json();
-}
-async function apiPost(body) {
-  const r = await fetch(API, { method: 'POST', body: JSON.stringify(body) });
-  return r.json();
-}
-
-// ── INIT ─────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
-  const now = new Date();
-  calYear = now.getFullYear(); calMonth = now.getMonth();
-  document.getElementById('suivi-date').value = today();
-  document.getElementById('mens-date').value = today();
-  document.getElementById('header-date').textContent =
-    now.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
-
-  const [p, s, m] = await Promise.all([
-    apiFetch({action:'getPlans'}),
-    apiFetch({action:'getSuivi'}),
-    apiFetch({action:'getMensurations'})
-  ]);
-  plans = p; suivi = s; mensurations = Array.isArray(m) ? m : [];
-
-  buildPlanSelector();
-  renderCalendar();
-  loadDayForm();
-  renderMensurations();
-  updateStats();
-});
-
-// ── TABS ─────────────────────────────────────────────────────────────────
-function switchTab(id, btn) {
-  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  btn.classList.add('active');
-}
-
-// ═══════════════════ PLAN ════════════════════════════════════════════════
-const PLAN_LABELS = {
-  easyDayA:'Easy Day — Séré 🌿', easyDayB:'Easy Day — Oeufs 🥚',
-  hardDayA:'Hard Day — Séré 💪', hardDayB:'Hard Day — Oeufs 🥚💪',
-  carbLoading:'Carb Loading ⚡', postChir:'Post Chirurgie 🏥', cheatMeal:'Cheat Meal 🍕'
+let STATE = {
+  tab: "plan", activePlan: "easyDay", suivi: {}, mensurations: [],
+  calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
+  openDay: null, openMeals: {}, proteinSelections: {}, proteinPanels: {}, variantB: {}, subGroupVariant: {}, editingMens: null, addingMens: false,
 };
 
-function buildPlanSelector() {
-  const sel = document.getElementById('plan-selector');
-  sel.innerHTML = '';
-  Object.keys(plans).forEach(id => {
-    const label = plans[id].label || PLAN_LABELS[id] || id;
-    const btn = document.createElement('button');
-    btn.className = 'plan-btn';
-    btn.textContent = (plans[id].emoji || '') + ' ' + label;
-    btn.onclick = () => selectPlan(id, btn);
-    sel.appendChild(btn);
-  });
-  // Auto-select first
-  const first = Object.keys(plans)[0];
-  if (first) selectPlan(first, sel.querySelector('.plan-btn'));
+// ── DONNÉES NUTRITIONNELLES ────────────────────────────────────────────────
+const PROT_OPTS = [
+  { name:"Filet de poulet",  qty:150, ref:100, cal:110, prot:22.2, gluc:1,   lip:2   },
+  { name:"Crevettes",        qty:170, ref:100, cal:99,  prot:24,   gluc:0,   lip:1   },
+  { name:"Thon en conserve", qty:150, ref:100, cal:116, prot:26,   gluc:0,   lip:1   },
+  { name:"Poisson blanc",    qty:180, ref:100, cal:80,  prot:18,   gluc:0,   lip:0.5 },
+  { name:"Saumon",           qty:80,  ref:100, cal:208, prot:20,   gluc:0,   lip:13  },
+  { name:"Boeuf maigre",     qty:120, ref:100, cal:150, prot:22,   gluc:0,   lip:6   },
+  { name:"Tofu",             qty:200, ref:100, cal:76,  prot:8,    gluc:1,   lip:4   },
+];
+
+const FEC     = { ref:100, cal:115, prot:2.6,  gluc:23,  lip:0.9 };
+const LEG     = { ref:100, cal:30,  prot:1.2,  gluc:4.5, lip:0.2 };
+const COMPOTE = { ref:100, cal:57,  prot:0.5,  gluc:12.5,lip:0.3 };
+const SERE    = { ref:100, cal:67,  prot:12,   gluc:3.5, lip:0.3 };
+const CHOC    = { ref:100, cal:572, prot:9,    gluc:30,  lip:40  };
+const HUILE   = { ref:1,   cal:87,  prot:0,    gluc:0.1, lip:10  };
+const BANANE  = { ref:100, cal:89,  prot:1,    gluc:23,  lip:0   };
+
+// Meal 1 variantes
+const M1_EASY_A = [
+  { name:"Sere maigre",         qty:150, unit:"g",      ...SERE    },
+  { name:"Granola",             qty:35,  unit:"g",      ref:100, cal:450, prot:9,   gluc:60, lip:20  },
+  { name:"Sirop d'erable",      qty:10,  unit:"g",      ref:100, cal:260, prot:0,   gluc:67, lip:0   },
+  { name:"Beurre de cacahuete", qty:10,  unit:"g",      ref:100, cal:580, prot:25,  gluc:20, lip:50  },
+  { name:"Framboise",           qty:50,  unit:"g",      ref:100, cal:55,  prot:1.2, gluc:12, lip:0.7 },
+];
+const M1_EASY_B = [
+  { name:"Oeuf entier",             qty:1,  unit:"piece", ref:1,   cal:74,  prot:6.5, gluc:0.4,lip:5.1 },
+  { name:"Jambon sans nitrite",     qty:35, unit:"g",     ref:100, cal:120, prot:22,  gluc:0,  lip:3   },
+  { name:"Pain complet Harry's",    qty:40, unit:"g",     ref:100, cal:253, prot:7.7, gluc:41.7,lip:4.5},
+  { name:"Cottage cheese",          qty:60, unit:"g",     ref:100, cal:95,  prot:11,  gluc:4,  lip:4   },
+  { name:"1/2 Avocat",              qty:90, unit:"g",     ref:100, cal:160, prot:2,   gluc:8,  lip:14  },
+];
+const M1_HARD_A = [
+  { name:"Sere maigre",         qty:150, unit:"g", ...SERE    },
+  { name:"Granola",             qty:50,  unit:"g", ref:100, cal:450, prot:9,   gluc:60, lip:20  },
+  { name:"Sirop d'erable",      qty:10,  unit:"g", ref:100, cal:260, prot:0,   gluc:67, lip:0   },
+  { name:"Beurre de cacahuete", qty:10,  unit:"g", ref:100, cal:580, prot:25,  gluc:20, lip:50  },
+  { name:"Framboise",           qty:50,  unit:"g", ref:100, cal:55,  prot:1.2, gluc:12, lip:0.7 },
+];
+const M1_HARD_B = [
+  { name:"Oeuf entier",             qty:1,  unit:"piece", ref:1,   cal:74,  prot:6.5, gluc:0.4,lip:5.1 },
+  { name:"Jambon sans nitrite",     qty:35, unit:"g",     ref:100, cal:120, prot:22,  gluc:0,  lip:3   },
+  { name:"Pain complet Harry's",    qty:60, unit:"g",     ref:100, cal:253, prot:7.7, gluc:41.7,lip:4.5},
+  { name:"Cottage cheese",          qty:60, unit:"g",     ref:100, cal:95,  prot:11,  gluc:4,  lip:4   },
+  { name:"1/2 Avocat",              qty:90, unit:"g",     ref:100, cal:160, prot:2,   gluc:8,  lip:14  },
+];
+
+function getM1(planKey, variant) {
+  if (planKey === "easyDay") return variant === "B" ? M1_EASY_B : M1_EASY_A;
+  if (planKey === "hardDay") return variant === "B" ? M1_HARD_B : M1_HARD_A;
+  return null;
 }
 
-function selectPlan(id, btn) {
-  document.querySelectorAll('.plan-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentPlan = id;
-  renderPlan(id);
+// ── PLANS ─────────────────────────────────────────────────────────────────
+const PLANS = {
+  easyDay: { label:"Easy Day", emoji:"🌿", meals:[
+    { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082",
+      variantKey:"easyDay",
+      supplements:["Zinc bisglycinate 15mg","Omega 3 3g","Vitamine D3K2 1000 UI","Creatine 3g"],
+    },
+    { id:"m2", name:"Meal 2", time:"Dejeuner", color:"#e3f2fd", accent:"#1565c0", border:"#90caf9", items:[
+      { name:"Feculents cuits au choix", qty:100, unit:"g", ...FEC },
+      { name:"Proteine au choix", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2, isProtein:true, opts:PROT_OPTS },
+      { name:"Legumes ou crudites", qty:250, unit:"g", ...LEG },
+      { name:"Compote sans sucre", qty:150, unit:"g", ...COMPOTE },
+      { name:"Chocolat 70%", qty:10, unit:"g", ...CHOC },
+    ]},
+    { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8",
+      subGroups:[
+        { label:"Option A", items:[
+          { name:"Iso whey", qty:20, unit:"g", ref:100, cal:474, prot:92, gluc:1, lip:1 },
+          { name:"Banane", qty:120, unit:"g", ref:100, ...BANANE },
+          { name:"3 Petit beurre ou speculos", qty:24, unit:"g", ref:100, cal:460, prot:7.9, gluc:75, lip:14 },
+        ]},
+        { label:"Option B", items:[
+          { name:"Sere maigre", qty:150, unit:"g", ...SERE },
+          { name:"Muesli", qty:50, unit:"g", ref:100, cal:474, prot:7.5, gluc:61, lip:8 },
+        ]},
+      ]},
+    { id:"m4", name:"Meal 4", time:"Diner", color:"#e8f5e9", accent:"#2e7d32", border:"#a5d6a7", items:[
+      { name:"Feculents cuits au choix", qty:100, unit:"g", ...FEC },
+      { name:"Proteine au choix", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2, isProtein:true, opts:PROT_OPTS },
+      { name:"Legumes ou crudites", qty:250, unit:"g", ...LEG },
+      { name:"Huile d'olive (1 c.a.c.)", qty:0.5, unit:"c.a.c.", ...HUILE },
+      { name:"Compote sans sucre", qty:150, unit:"g", ...COMPOTE },
+    ]},
+    { id:"m5", name:"Meal 5 — Intra Training", time:"Sauf easy jogg", color:"#fbe9e7", accent:"#bf360c", border:"#ffab91", items:[
+      { name:"Electrolytes", supplement:true },
+    ]},
+  ]},
+
+  hardDay: { label:"Hard Day", emoji:"💪", meals:[
+    { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082",
+      variantKey:"hardDay",
+      supplements:["Zinc bisglycinate 15mg","Omega 3 3g","Vitamine D3K2 1000 UI","Creatine 3g"],
+    },
+    { id:"m2", name:"Meal 2", time:"Dejeuner", color:"#e3f2fd", accent:"#1565c0", border:"#90caf9", items:[
+      { name:"Feculents cuits au choix", qty:150, unit:"g", ...FEC },
+      { name:"Proteine au choix", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2, isProtein:true, opts:PROT_OPTS },
+      { name:"Legumes ou crudites", qty:250, unit:"g", ...LEG },
+      { name:"Compote sans sucre", qty:150, unit:"g", ...COMPOTE },
+      { name:"Chocolat 70%", qty:20, unit:"g", ...CHOC },
+    ]},
+    { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8",
+      subGroups:[
+        { label:"Option A", items:[
+          { name:"Iso whey", qty:20, unit:"g", ref:100, cal:474, prot:92, gluc:1, lip:1 },
+          { name:"Banane", qty:120, unit:"g", ref:100, ...BANANE },
+          { name:"3 Petit beurre ou speculos", qty:24, unit:"g", ref:100, cal:460, prot:7.9, gluc:75, lip:14 },
+        ]},
+        { label:"Option B", items:[
+          { name:"Sere maigre", qty:150, unit:"g", ...SERE },
+          { name:"Muesli", qty:50, unit:"g", ref:100, cal:474, prot:7.5, gluc:61, lip:8 },
+        ]},
+      ]},
+    { id:"m4", name:"Meal 4", time:"Diner", color:"#e8f5e9", accent:"#2e7d32", border:"#a5d6a7", items:[
+      { name:"Feculents cuits au choix", qty:150, unit:"g", ...FEC },
+      { name:"Proteine au choix", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2, isProtein:true, opts:PROT_OPTS },
+      { name:"Legumes ou crudites", qty:250, unit:"g", ...LEG },
+      { name:"Huile d'olive (1 c.a.c.)", qty:0.5, unit:"c.a.c.", ...HUILE },
+      { name:"Compote sans sucre", qty:150, unit:"g", ...COMPOTE },
+    ]},
+    { id:"m5", name:"Meal 5 — Intra Training", time:"Sauf easy jogg", color:"#fbe9e7", accent:"#bf360c", border:"#ffab91", items:[
+      { name:"Electrolytes", supplement:true },
+    ]},
+  ]},
+
+  carbloading: { label:"Carbloading", emoji:"⚡", meals:[
+    { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082", items:[
+      { name:"Sere maigre", qty:150, unit:"g", ...SERE },
+      { name:"Miel", qty:15, unit:"g", ref:100, cal:300, prot:0.01, gluc:83, lip:0.5 },
+      { name:"Pain complet Harry's", qty:80, unit:"g", ref:100, cal:253, prot:7.7, gluc:41.7, lip:4.5 },
+      { name:"Confiture", qty:40, unit:"g", ref:100, cal:244, prot:0.5, gluc:59, lip:0.5 },
+      { name:"Zinc bisglycinate 15mg", supplement:true },
+      { name:"Omega 3 3g", supplement:true },
+      { name:"Vitamine D3K2 1000 UI", supplement:true },
+      { name:"Creatine 3g", supplement:true },
+    ]},
+    { id:"m2", name:"Meal 2", time:"Dejeuner", color:"#e3f2fd", accent:"#1565c0", border:"#90caf9",
+      subGroups:[
+        { label:"Option A", items:[
+          { name:"Feculents cuits au choix", qty:200, unit:"g", ...FEC },
+          { name:"Filet de poulet", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2 },
+          { name:"Huile d'olive (1 c.a.c.)", qty:0.5, unit:"c.a.c.", ...HUILE },
+          { name:"Compote sans sucre", qty:100, unit:"g", ...COMPOTE },
+        ]},
+        { label:"Option B", items:[
+          { name:"Feculents cuits au choix", qty:150, unit:"g", ...FEC },
+          { name:"Jambon maigre", qty:100, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2 },
+          { name:"Huile d'olive (1 c.a.c.)", qty:0.5, unit:"c.a.c.", ...HUILE },
+          { name:"Compote sans sucre", qty:100, unit:"g", ...COMPOTE },
+        ]},
+      ]},
+    { id:"m3", name:"Meal 3", time:"Collation", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8",
+      subGroups:[
+        { label:"Option A", items:[
+          { name:"Iso whey", qty:15, unit:"g", ref:100, cal:474, prot:92, gluc:1, lip:1 },
+          { name:"Banane", qty:120, unit:"g", ref:100, ...BANANE },
+          { name:"Galettes de riz", qty:2, unit:"pieces", ref:1, cal:35, prot:0.8, gluc:7.5, lip:0.3 },
+        ]},
+        { label:"Option B", items:[
+          { name:"Banane", qty:120, unit:"g", ref:100, ...BANANE },
+          { name:"Galettes de riz", qty:2, unit:"pieces", ref:1, cal:35, prot:0.8, gluc:7.5, lip:0.3 },
+        ]},
+      ]},
+    { id:"m4", name:"Meal 4", time:"Diner", color:"#e8f5e9", accent:"#2e7d32", border:"#a5d6a7", items:[
+      { name:"Feculents cuits au choix", qty:200, unit:"g", ...FEC },
+      { name:"Filet de poulet", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2 },
+      { name:"Huile d'olive (1 c.a.s.)", qty:1, unit:"c.a.s.", ...HUILE },
+      { name:"Compote sans sucre", qty:200, unit:"g", ...COMPOTE },
+    ]},
+    { id:"m5", name:"Meal 5 — Intra Training", time:"Sauf easy jogg", color:"#fbe9e7", accent:"#bf360c", border:"#ffab91", items:[
+      { name:"Electrolytes", supplement:true },
+    ]},
+  ]},
+
+  cheatMeal: { label:"Cheat Meal", emoji:"🍔", meals:[
+    { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082", items:[
+      { name:"Sere maigre", qty:200, unit:"g", ...SERE },
+      { name:"Omega 3 3g", supplement:true },
+      { name:"Vitamine D3K2 1000 UI", supplement:true },
+      { name:"Creatine 3g", supplement:true },
+      { name:"Zinc bisglycinate 15mg", supplement:true },
+    ]},
+    { id:"m2", name:"Meal 2", time:"Dejeuner (leger)", color:"#e3f2fd", accent:"#1565c0", border:"#90caf9", items:[
+      { name:"Filet de poulet", qty:150, unit:"g", ref:100, cal:110, prot:22.2, gluc:1, lip:2 },
+      { name:"Legumes ou crudites", qty:250, unit:"g", ...LEG },
+    ]},
+    { id:"m3", name:"Meal 3", time:"Si nuit (2h-3h)", color:"#f3e5f5", accent:"#6a1b9a", border:"#ce93d8", items:[
+      { name:"Sere maigre", qty:200, unit:"g", ...SERE },
+    ]},
+    { id:"m4", name:"Meal 4 — CHEAT MEAL", time:"Repas libre", color:"#fff3e0", accent:"#e65100", border:"#ffcc80", items:[
+      { name:"CHEAT MEAL — repas libre !", cheat:true },
+    ]},
+    { id:"m5", name:"Meal 5", time:"Pas de training", color:"#f5f5f5", accent:"#9e9e9e", border:"#e0e0e0", items:[] },
+  ]},
+};
+
+// ── MENSURATIONS EMILIE ────────────────────────────────────────────────────
+const MENS_FIELDS = [
+  { key:"poids",    label:"Poids",     unit:"kg", step:"0.1" },
+  { key:"poitrine", label:"Poitrine",  unit:"cm", step:"0.5" },
+  { key:"taille",   label:"Taille",    unit:"cm", step:"0.5" },
+  { key:"nombril",  label:"Nombril",   unit:"cm", step:"0.5" },
+  { key:"fesses",   label:"Fesses",    unit:"cm", step:"0.5" },
+  { key:"cuisseD",  label:"Cuisse D",  unit:"cm", step:"0.5" },
+  { key:"cuisseG",  label:"Cuisse G",  unit:"cm", step:"0.5" },
+  { key:"genouD",   label:"Genou D",   unit:"cm", step:"0.5" },
+  { key:"genouG",   label:"Genou G",   unit:"cm", step:"0.5" },
+];
+
+const MONTHS = ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
+const DAYS_SHORT = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+
+// ── CALCUL ────────────────────────────────────────────────────────────────
+function calcItem(item) {
+  if (item.supplement || item.cheat || !item.qty) return { cal:0, prot:0, gluc:0, lip:0 };
+  const r = item.qty / item.ref;
+  return { cal:Math.round(r*item.cal), prot:Math.round(r*item.prot*10)/10, gluc:Math.round(r*item.gluc*10)/10, lip:Math.round(r*item.lip*10)/10 };
+}
+function getAllItems(meal) { return meal.subGroups ? meal.subGroups.flatMap(g=>g.items) : (meal.items||[]); }
+function toKey(y,m,d) { return `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`; }
+function nextId(arr) { return arr.length ? Math.max(...arr.map(r=>r.id))+1 : 1; }
+function r1(n) { return Math.round(n*10)/10; }
+function macroPill(m, small) {
+  const s = small ? 9:11, sv = small ? 11:13;
+  return [
+    {l:"kcal",v:Math.round(m.cal),  c:"#e65100",bg:"#fff3e0"},
+    {l:"prot",v:r1(m.prot)+"g",    c:"#1b5e20",bg:"#e8f5e9"},
+    {l:"gluc",v:r1(m.gluc)+"g",    c:"#0d47a1",bg:"#e3f2fd"},
+    {l:"lip", v:r1(m.lip)+"g",     c:"#880e4f",bg:"#fce4ec"},
+  ].map(p=>`<div class="macro-pill" style="background:${p.bg}"><span class="ml" style="color:${p.c};font-size:${s}px">${p.l}</span><span class="mv" style="color:${p.c};font-size:${sv}px">${p.v}</span></div>`).join("");
+}
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg || "Enregistre ✓";
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2200);
 }
 
-function calcMacros(items) {
-  let cal=0, prot=0, gluc=0, lip=0;
-  items.forEach(it => {
-    if (it.supplement) return;
-    const r = it.ref || 100;
-    cal  += (it.qty / r) * it.cal;
-    prot += (it.qty / r) * it.prot;
-    gluc += (it.qty / r) * it.gluc;
-    lip  += (it.qty / r) * it.lip;
-  });
-  return { cal: Math.round(cal), prot: Math.round(prot), gluc: Math.round(gluc), lip: Math.round(lip) };
-}
+// ── RENDER PLAN ───────────────────────────────────────────────────────────
+function renderPlan() {
+  const plan = PLANS[STATE.activePlan];
+  const totals = plan.meals.reduce((acc,meal)=>{
+    let items4total;
+    if (meal.variantKey) {
+      items4total = getM1(meal.variantKey, STATE.variantB[meal.variantKey] ? "B" : "A") || [];
+    } else if (meal.subGroups) {
+      const sgKey = STATE.activePlan + meal.id;
+      const sgV = STATE.subGroupVariant[sgKey] || "A";
+      items4total = (sgV==="A" ? meal.subGroups[0] : (meal.subGroups[1]||meal.subGroups[0])).items;
+    } else {
+      items4total = getAllItems(meal);
+    }
+    items4total.forEach(item => {
+      const active = item.isProtein ? item.opts[STATE.proteinSelections[item.name+meal.id]||0] : item;
+      const m = calcItem(active);
+      acc.cal+=m.cal; acc.prot+=m.prot; acc.gluc+=m.gluc; acc.lip+=m.lip;
+    });
+    return acc;
+  }, {cal:0,prot:0,gluc:0,lip:0});
 
-function itemsHtml(items) {
-  return items.map(it => {
-    if (it.supplement) return `<div class="item-row"><span class="item-name">${it.name}</span><span class="tag-suppl">💊 suppl.</span></div>`;
-    const r = it.ref || 100;
-    const cal = Math.round((it.qty / r) * it.cal);
-    const unitLabel = it.unit === 'pièce' || it.unit === 'pièces' || it.unit === 'c.à.s.'
-      ? `${it.qty} ${it.unit}` : `${it.qty}g`;
-    return `<div class="item-row">
-      <span class="item-name">${it.name}</span>
-      <span class="item-qty">${unitLabel}</span>
-      <span class="item-cal">${cal} kcal</span>
+  let html = `<div class="plan-btns">${Object.entries(PLANS).map(([k,p])=>`<button class="plan-btn ${STATE.activePlan===k?"active":""}" onclick="setPlan('${k}')">${p.emoji} ${p.label}</button>`).join("")}</div>
+    <div class="macro-bar">
+      <div class="macro-cell"><div class="lbl">Total kcal</div><div class="val" style="color:#e65100">${Math.round(totals.cal)}</div></div>
+      <div class="macro-cell"><div class="lbl">Proteines</div><div class="val" style="color:#1b5e20">${Math.round(totals.prot)}g</div></div>
+      <div class="macro-cell"><div class="lbl">Glucides</div><div class="val" style="color:#0d47a1">${Math.round(totals.gluc)}g</div></div>
+      <div class="macro-cell"><div class="lbl">Lipides</div><div class="val" style="color:#880e4f">${Math.round(totals.lip)}g</div></div>
     </div>`;
-  }).join('');
-}
-
-function renderPlan(id) {
-  const plan = plans[id];
-  if (!plan) return;
-  let totCal=0, totProt=0, totGluc=0, totLip=0;
-  let html = '';
 
   plan.meals.forEach(meal => {
-    let allItems = [];
-    let bodyHtml = '';
+    const mId = meal.id;
+    const isOpen = STATE.openMeals[mId] !== false;
+    let mealItems;
+    if (meal.variantKey) {
+      mealItems = getM1(meal.variantKey, STATE.variantB[meal.variantKey] ? "B" : "A") || [];
+    } else if (meal.subGroups) {
+      const sgKey = STATE.activePlan + mId;
+      const sgV = STATE.subGroupVariant[sgKey] || "A";
+      mealItems = (sgV==="A" ? meal.subGroups[0] : (meal.subGroups[1]||meal.subGroups[0])).items;
+    } else {
+      mealItems = getAllItems(meal);
+    }
+    const mt = mealItems.reduce((acc,item)=>{ const m=calcItem(item); return {cal:acc.cal+m.cal,prot:acc.prot+m.prot,gluc:acc.gluc+m.gluc,lip:acc.lip+m.lip}; },{cal:0,prot:0,gluc:0,lip:0});
 
-    if (meal.subGroups && meal.subGroups.length > 0) {
-      meal.subGroups.forEach(sg => {
-        allItems = allItems.concat(sg.items);
-        bodyHtml += `<div class="subgroup-title">— ${sg.label}</div>${itemsHtml(sg.items)}`;
+    html += `<div class="meal-card" style="border-color:${meal.border}">
+      <div class="meal-header" style="background:${meal.color}" onclick="toggleMeal('${mId}')">
+        <div><h3 style="color:${meal.accent}">${meal.name}</h3><small style="color:${meal.accent}">${meal.time}</small></div>
+        <div style="display:flex;align-items:center;gap:8px"><span class="meal-kcal" style="color:${meal.accent}">${Math.round(mt.cal)} kcal</span><span class="chevron ${isOpen?"open":""}" style="color:${meal.accent}">▾</span></div>
+      </div>
+      <div class="meal-body ${isOpen?"open":""}">`;
+
+    if (meal.variantKey) {
+      const isB = STATE.variantB[meal.variantKey];
+      const varItems = getM1(meal.variantKey, isB ? "B" : "A") || [];
+      html += `<div style="display:flex;gap:6px;margin-bottom:8px">
+        <button onclick="toggleVariant('${meal.variantKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${!isB?meal.accent:"#ddd"};background:${!isB?meal.color:"#fff"};color:${!isB?meal.accent:"#888"};font-size:12px;font-weight:700;cursor:pointer">Option A — Sere</button>
+        <button onclick="toggleVariant('${meal.variantKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${isB?meal.accent:"#ddd"};background:${isB?meal.color:"#fff"};color:${isB?meal.accent:"#888"};font-size:12px;font-weight:700;cursor:pointer">Option B — Oeufs</button>
+      </div>`;
+      varItems.forEach(item => {
+        const m = calcItem(item);
+        html += `<div class="food-row"><div style="flex:1"><span class="food-name">${item.name}</span><div class="food-qty">${item.qty} ${item.unit||"g"}</div></div><div class="macros">${macroPill(m,true)}</div></div>`;
+      });
+      if (meal.supplements) {
+        meal.supplements.forEach(s => {
+          html += `<div class="food-row supplement"><div><span class="badge badge-suppl">SUPPL.</span><span class="food-name" style="color:#999">${s}</span></div></div>`;
+        });
+      }
+    } else if (meal.subGroups) {
+      const sgKey = STATE.activePlan + mId;
+      const sgV = STATE.subGroupVariant[sgKey] || "A";
+      html += `<div style="display:flex;gap:6px;margin-bottom:8px">
+        <button onclick="toggleSubGroup('${sgKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${sgV==="A"?meal.accent:"#ddd"};background:${sgV==="A"?meal.color:"#fff"};color:${sgV==="A"?meal.accent:"#888"};font-size:12px;font-weight:700;cursor:pointer">${meal.subGroups[0].label}</button>
+        <button onclick="toggleSubGroup('${sgKey}')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid ${sgV==="B"?meal.accent:"#ddd"};background:${sgV==="B"?meal.color:"#fff"};color:${sgV==="B"?meal.accent:"#888"};font-size:12px;font-weight:700;cursor:pointer">${meal.subGroups[1]?meal.subGroups[1].label:""}</button>
+      </div>`;
+      const selGroup = sgV==="A" ? meal.subGroups[0] : (meal.subGroups[1]||meal.subGroups[0]);
+      selGroup.items.forEach(item => {
+        const m = calcItem(item);
+        html += `<div class="food-row"><div style="flex:1"><span class="food-name">${item.name}</span><div class="food-qty">${item.qty} ${item.unit||"g"}</div></div><div class="macros">${macroPill(m,true)}</div></div>`;
       });
     } else {
-      allItems = meal.items || [];
-      bodyHtml = itemsHtml(allItems);
+      (meal.items||[]).forEach(item => {
+        if (item.isProtein) {
+          const key = item.name + mId;
+          const selIdx = STATE.proteinSelections[key] || 0;
+          const active = item.opts[selIdx];
+          const m = calcItem(active);
+          const isProtOpen = STATE.proteinPanels[key];
+          html += `<div class="food-row" style="border:1.5px dashed ${meal.accent};cursor:pointer" onclick="toggleProtein('${key}')">
+            <div style="flex:1"><div><span class="badge" style="background:${meal.color};color:${meal.accent};border:1px solid ${meal.accent};font-size:9px;padding:1px 5px;border-radius:4px;font-weight:600;margin-right:4px">${isProtOpen?"▾":"▸"} OPTIONS</span><span class="food-name">${active.name}</span></div><div class="food-qty">${active.qty}g</div></div>
+            <div class="macros">${macroPill(m,true)}</div>
+          </div>`;
+          if (isProtOpen) {
+            html += `<div style="background:#f5f5f5;border-radius:10px;padding:8px;margin-bottom:3px"><div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Choisis ta proteine</div>`;
+            item.opts.forEach((opt,i) => {
+              const om = calcItem(opt);
+              html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 9px;border-radius:8px;cursor:pointer;margin-bottom:3px;border:${selIdx===i?`1.5px solid ${meal.accent}`:"0.5px solid #e0e0e0"};background:${selIdx===i?"#fce4ec":"#fff"}" onclick="selectProtein('${key}',${i})">
+                <div><span style="font-size:12px;font-weight:${selIdx===i?700:500};color:${selIdx===i?meal.accent:"#333"}">${selIdx===i?"✓ ":""}${opt.name}</span><span style="font-size:11px;color:#999;margin-left:5px">${opt.qty}g</span></div>
+                <div class="macros">${macroPill(om,true)}</div>
+              </div>`;
+            });
+            html += `</div>`;
+          }
+          return;
+        }
+        const m = calcItem(item);
+        if (item.cheat) {
+          html += `<div class="food-row cheat"><span style="font-size:24px">🍔</span><div style="margin-left:10px"><span class="food-name" style="color:#e65100;font-weight:700">CHEAT MEAL</span><div class="food-qty" style="color:#f57f17">Repas libre — profites-en !</div></div></div>`;
+        } else if (item.supplement) {
+          html += `<div class="food-row supplement"><div><span class="badge badge-suppl">SUPPL.</span><span class="food-name" style="color:#999">${item.name}</span></div></div>`;
+        } else {
+          html += `<div class="food-row"><div style="flex:1"><span class="food-name">${item.name}</span><div class="food-qty">${item.qty} ${item.unit}</div></div><div class="macros">${macroPill(m,true)}</div></div>`;
+        }
+      });
     }
-
-    const m = calcMacros(allItems);
-    if (meal.id !== 'tr') { totCal+=m.cal; totProt+=m.prot; totGluc+=m.gluc; totLip+=m.lip; }
-
-    html += `<div class="meal-card" style="border-color:${meal.border};background:${meal.color}">
-      <div class="meal-header" style="color:${meal.accent}">
-        <span class="meal-name">${meal.name}</span>
-        <span class="meal-time">${meal.time}</span>
-      </div>
-      ${m.cal > 0 ? `<div class="meal-macros-bar" style="color:${meal.accent};background:${meal.color}">
-        <span>🔥 <b>${m.cal}</b> kcal</span>
-        <span>🥩 <b>${m.prot}g</b> prot</span>
-        <span>🌾 <b>${m.gluc}g</b> gluc</span>
-        <span>🥑 <b>${m.lip}g</b> lip</span>
-      </div>` : ''}
-      <div class="meal-items">${bodyHtml}</div>
-    </div>`;
+    html += `<div class="meal-total"><span>Total</span><div class="macros">${macroPill(mt,false)}</div></div></div></div>`;
   });
+  return html;
+}
 
-  html = `<div class="card" style="background:linear-gradient(135deg,var(--pink-l),#fff);border-color:var(--border)">
-    <div style="text-align:center">
-      <div style="font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;color:var(--pink-d);margin-bottom:6px">${plan.emoji} ${plan.label} — Total journée</div>
-      <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;font-size:.85rem;font-weight:700">
-        <span>🔥 <b style="color:var(--pink-d)">${fmt(totCal)}</b> kcal</span>
-        <span>🥩 <b>${fmt(totProt)}g</b></span>
-        <span>🌾 <b>${fmt(totGluc)}g</b></span>
-        <span>🥑 <b>${fmt(totLip)}g</b></span>
+// ── RENDER SUIVI ─────────────────────────────────────────────────────────
+function dayBg(d) {
+  if (!d) return "#fff";
+  if (d.diet==="ok" && d.training==="ok") return "#e8f5e9";
+  if (d.diet==="ok" && d.training==="ko") return "#fff9c4";
+  if (d.diet==="ko" && d.training==="ok") return "#fff3e0";
+  if (d.diet==="ko" && d.training==="ko") return "#ffebee";
+  if (d.diet==="ok") return "#fce4ec";
+  if (d.diet==="ko") return "#fff8f8";
+  return "#f5f5f5";
+}
+function dayBorder(d) {
+  if (!d) return "0.5px solid #e0e0e0";
+  if (d.diet==="ok") return "1.5px solid #f48fb1";
+  if (d.diet==="ko") return "1.5px solid #ef9a9a";
+  return "1px solid #ddd";
+}
+
+function renderSuivi() {
+  const { calYear:y, calMonth:m, suivi, openDay } = STATE;
+  const today = new Date();
+  const todayKey = toKey(today.getFullYear(), today.getMonth(), today.getDate());
+  const yearBars = Array.from({length:12},(_,mi)=>{
+    const ks = Object.keys(suivi).filter(k=>k.startsWith(`${y}-${String(mi+1).padStart(2,"0")}`));
+    const ok = ks.filter(k=>suivi[k].diet==="ok").length;
+    const total = ks.length;
+    const rate = total>0 ? ok/total : null;
+    const barColor = rate===null ? "#e0e0e0" : rate>=0.8 ? "#f48fb1" : rate>=0.5 ? "#ffb74d" : "#e57373";
+    const isActive = mi===m;
+    return `<div class="year-month" onclick="setCalMonth(${mi})"><div class="bar ${isActive?"active":""}" style="background:${barColor};opacity:${isActive?1:0.55}"></div><span class="lbl ${isActive?"active":""}">${MONTHS[mi].slice(0,3)}</span></div>`;
+  }).join("");
+
+  const firstDay = new Date(y,m,1);
+  const lastDay  = new Date(y,m+1,0);
+  let startDow = firstDay.getDay(); startDow = startDow===0?6:startDow-1;
+  const totalCells = Math.ceil((startDow+lastDay.getDate())/7)*7;
+  const monthKeys = Object.keys(suivi).filter(k=>k.startsWith(`${y}-${String(m+1).padStart(2,"0")}`));
+  const dietOk  = monthKeys.filter(k=>suivi[k].diet==="ok").length;
+  const dietKo  = monthKeys.filter(k=>suivi[k].diet==="ko").length;
+  const trainOk = monthKeys.filter(k=>suivi[k].training==="ok").length;
+  const trainKo = monthKeys.filter(k=>suivi[k].training==="ko").length;
+  const withCal = monthKeys.filter(k=>suivi[k].cal);
+  const avgCal  = withCal.length ? Math.round(withCal.reduce((a,k)=>a+suivi[k].cal,0)/withCal.length) : null;
+
+  let cells = "";
+  for (let i=0; i<totalCells; i++) {
+    const dn = i-startDow+1;
+    if (dn<1||dn>lastDay.getDate()) { cells+=`<div class="cal-day empty"></div>`; continue; }
+    const key = toKey(y,m,dn);
+    const d = suivi[key]||null;
+    const isToday = key===todayKey;
+    const hasNote = d && (d.commentDiet||d.commentTraining);
+    let badges = "";
+    if (d) {
+      if (d.diet)     badges += `<span class="day-badge" style="color:${d.diet==="ok"?"#c2185b":"#b71c1c"}">${d.diet==="ok"?"D✔":"D✘"}</span>`;
+      if (d.training) badges += `<span class="day-badge" style="color:${d.training==="ok"?"#c2185b":"#e65100"}">${d.training==="ok"?"T✔":"T✘"}</span>`;
+    }
+    cells += `<div class="cal-day ${isToday?"today":""}" style="background:${dayBg(d)};border:${isToday?"2.5px solid #c2185b":dayBorder(d)}" onclick="openDay('${key}')">
+      <span class="day-num">${dn}</span>
+      ${d ? `<div class="day-badges">${badges}</div>${d.cal?`<span class="day-cal">${d.cal}</span>`:""}` : `<span class="day-add">+</span>`}
+      ${hasNote?`<div class="note-dot"></div>`:""}
+    </div>`;
+  }
+
+  let panel = "";
+  if (openDay) {
+    const dp = suivi[openDay]||null;
+    const parts = openDay.split("-");
+    const dlabel = `${parts[2]}/${parts[1]}/${parts[0]}`;
+    const f = STATE._dayForm || dp || {};
+    panel = `<div class="day-panel">
+      <div class="dp-header"><h3>📅 ${dlabel}</h3><button class="dp-close" onclick="closeDay()">✕ Fermer</button></div>
+      <div class="field-block"><div class="field-label">Calories</div>
+        <input class="inp" type="number" placeholder="ex: 1800" value="${f.cal||""}" id="dp-cal" oninput="updateDayForm('cal',this.value)">
       </div>
+      <div class="field-block"><div class="field-label">🍽 Diet</div>
+        <div class="status-toggle">
+          <button class="st-btn ${STATE._dayForm?.diet==="ok"?"ok":""}" onclick="setDayStatus('diet','ok')">✔ OK</button>
+          <button class="st-btn ${STATE._dayForm?.diet==="ko"?"ko":""}" onclick="setDayStatus('diet','ko')">✘ Ecart</button>
+          <button class="st-btn ${!STATE._dayForm?.diet?"none":""}" onclick="setDayStatus('diet',null)">—</button>
+        </div>
+      </div>
+      <div class="field-block"><div class="field-label">🏋️ Training</div>
+        <div class="status-toggle">
+          <button class="st-btn ${STATE._dayForm?.training==="ok"?"ok":""}" onclick="setDayStatus('training','ok')">✔ OK</button>
+          <button class="st-btn ${STATE._dayForm?.training==="ko"?"ko":""}" onclick="setDayStatus('training','ko')">✘ Ecart</button>
+          <button class="st-btn ${!STATE._dayForm?.training?"none":""}" onclick="setDayStatus('training',null)">—</button>
+        </div>
+      </div>
+      <div class="field-block"><div class="field-label">Note diet</div>
+        <textarea class="inp" placeholder="Ecart, commentaire, contexte..." id="dp-cd" oninput="updateDayForm('commentDiet',this.value)">${f.commentDiet||""}</textarea>
+      </div>
+      <div class="field-block"><div class="field-label">Note training</div>
+        <textarea class="inp" placeholder="Type de seance, intensite..." id="dp-ct" oninput="updateDayForm('commentTraining',this.value)">${f.commentTraining||""}</textarea>
+      </div>
+      <div class="dp-actions">
+        <button class="btn-save" onclick="saveDay()">Enregistrer</button>
+        ${dp?`<button class="btn-clear" onclick="clearDay()">Effacer</button>`:""}
+      </div>
+    </div>`;
+  }
+
+  return `<div class="year-strip">${yearBars}</div>
+    <div class="cal-nav">
+      <button onclick="prevMonth()">‹</button>
+      <div class="cal-title"><h3>${MONTHS[m]} ${y}</h3><small>${monthKeys.length} jours enregistres</small></div>
+      <button onclick="nextMonth()">›</button>
     </div>
-  </div>` + html;
-
-  document.getElementById('plan-content').innerHTML = html;
+    ${monthKeys.length>0?`<div class="cal-stats">
+      <div class="cal-stat" style="background:#fce4ec"><div class="sl" style="color:#c2185b">Diet OK</div><div class="sv" style="color:#c2185b">${dietOk}</div></div>
+      <div class="cal-stat" style="background:#ffebee"><div class="sl" style="color:#b71c1c">Ecarts</div><div class="sv" style="color:#b71c1c">${dietKo}</div></div>
+      <div class="cal-stat" style="background:#fce4ec"><div class="sl" style="color:#c2185b">Train OK</div><div class="sv" style="color:#c2185b">${trainOk}</div></div>
+      <div class="cal-stat" style="background:#fff3e0"><div class="sl" style="color:#e65100">Train KO</div><div class="sv" style="color:#e65100">${trainKo}</div></div>
+      <div class="cal-stat" style="background:#f3e5f5"><div class="sl" style="color:#6a1b9a">Moy kcal</div><div class="sv" style="color:#6a1b9a">${avgCal||"—"}</div></div>
+    </div>`:""}
+    <div class="day-headers">${DAYS_SHORT.map(d=>`<div class="day-hdr">${d}</div>`).join("")}</div>
+    <div class="cal-grid">${cells}</div>
+    <div class="cal-legend">
+      <div class="leg-item"><div class="leg-box" style="background:#e8f5e9;border-color:#a5d6a7"></div><span>Diet ✔ + Train ✔</span></div>
+      <div class="leg-item"><div class="leg-box" style="background:#fff3e0;border-color:#ffb74d"></div><span>Diet ✘ + Train ✔</span></div>
+      <div class="leg-item"><div class="leg-box" style="background:#fff9c4;border-color:#f9a825"></div><span>Diet ✔ + Train ✘</span></div>
+      <div class="leg-item"><div class="leg-box" style="background:#ffebee;border-color:#ef9a9a"></div><span>Diet ✘ + Train ✘</span></div>
+    </div>${panel}`;
 }
 
-// ═══════════════════ SUIVI ═══════════════════════════════════════════════
-function loadDayForm() {
-  const d = document.getElementById('suivi-date').value;
-  const day = suivi[d] || {};
-  document.getElementById('suivi-cal').value = day.cal != null ? day.cal : '';
-  document.getElementById('suivi-comment-diet').value  = day.commentDiet  || '';
-  document.getElementById('suivi-comment-train').value = day.commentTraining || '';
-  dietState  = day.diet  || null;
-  trainState = day.training || null;
-  refreshToggles();
-  highlightCal();
+// ── RENDER MENSURATIONS ───────────────────────────────────────────────────
+function renderMensurations() {
+  const rows = STATE.mensurations;
+  const first = rows[0], last = rows[rows.length-1];
+  let summary = "";
+  if (rows.length>=2 && first && last) {
+    summary = `<div class="mens-summary">
+      <div class="mens-stat" style="background:#fce4ec"><div class="ml" style="color:#c2185b">Poids depart</div><div class="mv" style="color:#c2185b">${first.poids||"—"} kg</div></div>
+      <div class="mens-stat" style="background:${last.poids<=first.poids?"#e8f5e9":"#fff3e0"}"><div class="ml" style="color:${last.poids<=first.poids?"#1b5e20":"#e65100"}">Poids actuel</div><div class="mv" style="color:${last.poids<=first.poids?"#1b5e20":"#e65100"}">${last.poids||"—"} kg</div></div>
+      <div class="mens-stat" style="background:#e8f5e9"><div class="ml" style="color:#1b5e20">Nombril</div><div class="mv" style="color:#1b5e20">${first.nombril||"—"} → ${last.nombril||"—"} cm</div></div>
+      <div class="mens-stat" style="background:#fce4ec"><div class="ml" style="color:#c2185b">Taille</div><div class="mv" style="color:#c2185b">${first.taille||"—"} → ${last.taille||"—"} cm</div></div>
+    </div>`;
+  }
+  function mensForm(f, onSave, onCancel, title) {
+    return `<div class="mens-form">
+      <h4>${title}</h4>
+      <div class="field-block"><div class="field-label">Date *</div><input class="inp" type="text" placeholder="JJ/MM/AAAA" value="${f.date||""}" id="mf-date"></div>
+      <div class="mens-grid">${MENS_FIELDS.map(fld=>`<div><div class="field-label">${fld.label} (${fld.unit})</div><input class="inp" type="number" step="${fld.step}" value="${f[fld.key]||""}" id="mf-${fld.key}"></div>`).join("")}</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-save" onclick="${onSave}">Enregistrer</button>
+        <button class="btn-cancel" onclick="${onCancel}">Annuler</button>
+      </div>
+    </div>`;
+  }
+  let addForm = STATE.addingMens ? mensForm({}, "submitAddMens()", "cancelAddMens()", "Nouveau bilan") :
+    `<button class="btn-add" style="border-color:#f48fb1;background:#fce4ec;color:#c2185b" onclick="startAddMens()">+ Ajouter un bilan</button>`;
+
+  let cardsHtml = rows.map((row,ri)=>{
+    if (STATE.editingMens===row.id) return mensForm(row, "submitEditMens()", "cancelEditMens()", "Modifier bilan");
+    const fieldsHtml = MENS_FIELDS.map(f=>{
+      const d = ri>0 && rows[ri-1][f.key] && row[f.key] ? row[f.key]-rows[ri-1][f.key] : null;
+      const better = d!==null && d<0;
+      const worse  = d!==null && d>0;
+      return `<div class="mens-field-card">
+        <div class="fl">${f.label}</div>
+        <div class="fv" style="color:${better?"#1b5e20":worse?"#b71c1c":"#1a1a2e"}">${row[f.key]||"—"} <span style="font-size:9px;font-weight:400">${f.unit}</span></div>
+        ${d!==null&&d!==0?`<div class="fd" style="color:${better?"#1b5e20":worse?"#b71c1c":"#888"}">${d>0?"+":""}${d.toFixed(1)}</div>`:""}
+      </div>`;
+    }).join("");
+    return `<div class="mens-card">
+      <div class="mens-card-header"><h4>${row.date}</h4><div style="display:flex;gap:5px">
+        <button class="btn-icon btn-edit" onclick="startEditMens(${row.id})">✏️</button>
+        <button class="btn-icon btn-del" onclick="deleteMens(${row.id})">✕</button>
+      </div></div>
+      <div class="mens-card-grid">${fieldsHtml}</div>
+    </div>`;
+  }).join("");
+
+  return summary + addForm + (rows.length===0?`<p style="text-align:center;color:#ccc;padding:30px 0;font-size:13px">Aucun bilan enregistre</p>`:cardsHtml);
 }
 
-function refreshToggles() {
-  document.getElementById('btn-diet-ok').className  = 'toggle-btn' + (dietState==='ok'?' ok':'');
-  document.getElementById('btn-diet-ko').className  = 'toggle-btn' + (dietState==='ko'?' ko':'');
-  document.getElementById('btn-train-ok').className = 'toggle-btn' + (trainState==='ok'?' ok':'');
-  document.getElementById('btn-train-ko').className = 'toggle-btn' + (trainState==='ko'?' ko':'');
+// ── RENDER PRINCIPAL ──────────────────────────────────────────────────────
+function render() {
+  const tabs = ["plan","suivi","mensuration"];
+  const tabLabels = ["🥗 Plan alim.","📅 Suivi","📏 Mensurations"];
+  let content = "";
+  if (STATE.tab==="plan") content = renderPlan();
+  else if (STATE.tab==="suivi") content = renderSuivi();
+  else content = renderMensurations();
+  document.getElementById("app").innerHTML = `
+    <div class="header">
+      <h1>🌸 Plan Alimentaire — Emilie</h1>
+      <p>Coaching nutritionnel · Donnees sauvegardees dans Google Sheets</p>
+      <div style="margin-top:10px"><button onclick="loadAllData(true)" style="padding:8px 14px;border:none;border-radius:8px;background:#c2185b;color:#fff;font-size:12px;font-weight:700;cursor:pointer;">↻ Rafraichir</button></div>
+    </div>
+    <div class="tabs">${tabs.map((t,i)=>`<button class="tab-btn ${STATE.tab===t?"active":""}" onclick="setTab('${t}')">${tabLabels[i]}</button>`).join("")}</div>
+    <div id="content">${content}</div>`;
 }
 
-function toggleDiet(v)  { dietState  = dietState===v ? null : v; refreshToggles(); }
-function toggleTrain(v) { trainState = trainState===v ? null : v; refreshToggles(); }
+// ── ACTIONS ───────────────────────────────────────────────────────────────
+function setTab(t) { STATE.tab=t; STATE.openDay=null; STATE._dayForm=null; render(); }
+function setPlan(k) { STATE.activePlan=k; render(); }
+function toggleMeal(id) { STATE.openMeals[id] = STATE.openMeals[id]===false ? true : false; render(); }
+function toggleSubGroup(key) { STATE.subGroupVariant[key] = STATE.subGroupVariant[key]==="B" ? "A" : "B"; render(); }
+function toggleVariant(planKey) { STATE.variantB[planKey] = !STATE.variantB[planKey]; render(); }
+function toggleProtein(key) { STATE.proteinPanels[key] = !STATE.proteinPanels[key]; render(); }
+function selectProtein(key,idx) { STATE.proteinSelections[key]=idx; render(); }
+function setCalMonth(m) { STATE.calMonth=m; STATE.openDay=null; STATE._dayForm=null; render(); }
+function prevMonth() { if(STATE.calMonth===0){STATE.calMonth=11;STATE.calYear--;}else STATE.calMonth--; STATE.openDay=null; STATE._dayForm=null; render(); }
+function nextMonth() { if(STATE.calMonth===11){STATE.calMonth=0;STATE.calYear++;}else STATE.calMonth++; STATE.openDay=null; STATE._dayForm=null; render(); }
 
-function changeDay(n) {
-  const d = new Date(document.getElementById('suivi-date').value + 'T12:00:00');
-  d.setDate(d.getDate() + n);
-  document.getElementById('suivi-date').value = d.toISOString().slice(0,10);
-  loadDayForm();
+function openDay(key) {
+  if (STATE.openDay===key) { STATE.openDay=null; STATE._dayForm=null; }
+  else { STATE.openDay=key; STATE._dayForm = STATE.suivi[key] ? {...STATE.suivi[key]} : {cal:"",diet:null,training:null,commentDiet:"",commentTraining:""}; }
+  render();
 }
+function closeDay() { STATE.openDay=null; STATE._dayForm=null; render(); }
+function updateDayForm(field,val) { if(!STATE._dayForm) STATE._dayForm={}; STATE._dayForm[field]=val; }
+function setDayStatus(field,val) { if(!STATE._dayForm) STATE._dayForm={}; STATE._dayForm[field]=val; render(); }
 
 async function saveDay() {
-  const d = document.getElementById('suivi-date').value;
-  const cal = document.getElementById('suivi-cal').value;
-  const btn = document.querySelector('#tab-suivi .btn-save');
-  btn.disabled = true; btn.textContent = 'Enregistrement…';
-  const dayData = {
-    cal: cal !== '' ? Number(cal) : null,
-    diet: dietState, training: trainState,
-    commentDiet:  document.getElementById('suivi-comment-diet').value,
-    commentTraining: document.getElementById('suivi-comment-train').value
-  };
-  const r = await apiPost({ action:'saveDayData', dateKey:d, dayData });
-  if (r.ok) {
-    suivi[d] = dayData;
-    renderCalendar(); updateStats();
-    toast('✅ Journée enregistrée !');
-  } else toast('❌ Erreur : ' + (r.error||'inconnue'));
-  btn.disabled = false; btn.textContent = '💾 Enregistrer';
+  const key = STATE.openDay; if(!key) return;
+  const f = STATE._dayForm || {};
+  const entry = { cal:f.cal?Number(f.cal):null, diet:f.diet||null, training:f.training||null, commentDiet:document.getElementById("dp-cd")?.value||"", commentTraining:document.getElementById("dp-ct")?.value||"" };
+  STATE.suivi[key]=entry; STATE.openDay=null; STATE._dayForm=null; render();
+  await api("saveDayData", { dateKey:key, dayData:entry });
+  showToast("Enregistre ✓");
+}
+async function clearDay() {
+  const key = STATE.openDay; if(!key) return;
+  delete STATE.suivi[key]; STATE.openDay=null; STATE._dayForm=null; render();
+  await api("saveDayData", { dateKey:key, dayData:null });
+  showToast("Jour efface");
 }
 
-// ── CALENDAR ─────────────────────────────────────────────────────────────
-function renderCalendar() {
-  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  document.getElementById('cal-title').textContent = months[calMonth] + ' ' + calYear;
-  const days = ['L','M','M','J','V','S','D'];
-  const td = today();
-  let html = days.map(d => `<div class="cal-day-label">${d}</div>`).join('');
-  const first = new Date(calYear, calMonth, 1).getDay();
-  const offset = (first + 6) % 7;
-  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-  for (let i = 0; i < offset; i++) html += `<div class="cal-day empty"></div>`;
-  const selDate = document.getElementById('suivi-date').value;
-  for (let d = 1; d <= daysInMonth; d++) {
-    const key = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const data = suivi[key];
-    let cls = 'cal-day';
-    if (key === td) cls += ' today';
-    if (key === selDate) cls += ' selected';
-    if (data) {
-      cls += ' has-data';
-      const dk = (data.diet==='ok'?'ok':'ko') + '-' + (data.training==='ok'?'ok':'ko');
-      cls += ' ' + dk;
-    }
-    html += `<div class="${cls}" onclick="selectDay('${key}')">${d}</div>`;
-  }
-  document.getElementById('cal-grid').innerHTML = html;
+function startAddMens() { STATE.addingMens=true; STATE.editingMens=null; render(); }
+function cancelAddMens() { STATE.addingMens=false; render(); }
+async function submitAddMens() {
+  const date = document.getElementById("mf-date").value;
+  if (!date) return alert("La date est obligatoire");
+  const record = { id:nextId(STATE.mensurations), date };
+  MENS_FIELDS.forEach(f => { const v=document.getElementById("mf-"+f.key)?.value; record[f.key]=v?Number(v):null; });
+  STATE.mensurations.push(record); STATE.addingMens=false; render();
+  await api("saveMensuration", { record });
+  showToast("Bilan ajoute ✓");
 }
-
-function selectDay(key) {
-  document.getElementById('suivi-date').value = key;
-  const d = new Date(key + 'T12:00:00');
-  calYear = d.getFullYear(); calMonth = d.getMonth();
-  loadDayForm(); renderCalendar();
+function startEditMens(id) { STATE.editingMens=id; STATE.addingMens=false; render(); }
+function cancelEditMens() { STATE.editingMens=null; render(); }
+async function submitEditMens() {
+  const date = document.getElementById("mf-date").value;
+  if (!date) return alert("La date est obligatoire");
+  STATE.mensurations = STATE.mensurations.map(r => {
+    if (r.id!==STATE.editingMens) return r;
+    const updated = { ...r, date };
+    MENS_FIELDS.forEach(f => { const v=document.getElementById("mf-"+f.key)?.value; updated[f.key]=v?Number(v):null; });
+    api("saveMensuration", { record:updated }).then(()=>showToast("Bilan modifie ✓"));
+    return updated;
+  });
+  STATE.editingMens=null; render();
 }
-function calPrev() { calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
-function calNext() { calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
-function highlightCal() { renderCalendar(); }
-
-// ── STATS ────────────────────────────────────────────────────────────────
-function updateStats() {
-  const all = Object.values(suivi).filter(d => d && d.diet && d.training);
-  const okOk = all.filter(d => d.diet==='ok' && d.training==='ok').length;
-  const withCal = all.filter(d => d.cal != null && d.cal > 0);
-  const avg = withCal.length ? Math.round(withCal.reduce((a,d)=>a+d.cal,0)/withCal.length) : null;
-
-  // Streak (jours consécutifs ok/ok depuis aujourd'hui en remontant)
-  let streak = 0;
-  const d = new Date();
-  for (let i = 0; i < 365; i++) {
-    const key = d.toISOString().slice(0,10);
-    const day = suivi[key];
-    if (day && day.diet==='ok' && day.training==='ok') { streak++; d.setDate(d.getDate()-1); }
-    else break;
-  }
-  document.getElementById('stat-ok').textContent     = okOk;
-  document.getElementById('stat-streak').textContent = streak;
-  document.getElementById('stat-avg').textContent    = avg ? avg : '–';
-}
-
-// ═══════════════════ MENSURATIONS ════════════════════════════════════════
-function renderMensurations() {
-  const tbody = document.getElementById('mens-body');
-  if (!mensurations.length) { tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:20px">Aucune mesure enregistrée</td></tr>'; return; }
-  const sorted = [...mensurations].sort((a,b) => b.id - a.id);
-  tbody.innerHTML = sorted.map(m => `<tr>
-    <td><b>${m.date}</b></td>
-    <td>${m.poids || '–'}</td>
-    <td>${m.poitrine || '–'}</td>
-    <td>${m.taille || '–'}</td>
-    <td>${m.nombril || '–'}</td>
-    <td>${m.fesses || '–'}</td>
-    <td>${m.cuisseD || '–'}</td>
-    <td>${m.cuisseG || '–'}</td>
-    <td>${m.genouD || '–'}</td>
-    <td>${m.genouG || '–'}</td>
-    <td><button class="btn-del" onclick="deleteMens(${m.id})">🗑</button></td>
-  </tr>`).join('');
-}
-
-async function saveMens() {
-  const date = document.getElementById('mens-date').value;
-  if (!date) { toast('⚠️ Sélectionne une date'); return; }
-  const btn = document.querySelector('#tab-mensurations .btn-save');
-  btn.disabled = true; btn.textContent = 'Enregistrement…';
-  const newId = mensurations.length > 0 ? Math.max(...mensurations.map(m=>m.id)) + 1 : 1;
-  const d = new Date(date);
-  const dateStr = d.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'});
-  const record = {
-    id: newId,
-    date: dateStr,
-    poids:    document.getElementById('m-poids').value    || null,
-    poitrine: document.getElementById('m-poitrine').value || null,
-    taille:   document.getElementById('m-taille').value   || null,
-    nombril:  document.getElementById('m-nombril').value  || null,
-    fesses:   document.getElementById('m-fesses').value   || null,
-    cuisseD:  document.getElementById('m-cuisseD').value  || null,
-    cuisseG:  document.getElementById('m-cuisseG').value  || null,
-    genouD:   document.getElementById('m-genouD').value   || null,
-    genouG:   document.getElementById('m-genouG').value   || null,
-  };
-  const r = await apiPost({ action:'saveMensuration', record });
-  if (r.ok) {
-    mensurations.push(record);
-    renderMensurations();
-    ['poids','poitrine','taille','nombril','fesses','cuisseD','cuisseG','genouD','genouG']
-      .forEach(f => document.getElementById('m-' + f).value = '');
-    toast('✅ Mesure enregistrée !');
-  } else toast('❌ Erreur : ' + (r.error||'inconnue'));
-  btn.disabled = false; btn.textContent = '💾 Enregistrer';
-}
-
 async function deleteMens(id) {
-  if (!confirm('Supprimer cette mesure ?')) return;
-  const r = await apiPost({ action:'deleteMensuration', id });
-  if (r.ok) {
-    mensurations = mensurations.filter(m => m.id !== id);
-    renderMensurations();
-    toast('🗑 Mesure supprimée');
-  } else toast('❌ Erreur');
+  if (!confirm("Supprimer ce bilan ?")) return;
+  STATE.mensurations = STATE.mensurations.filter(r=>r.id!==id); render();
+  await api("deleteMensuration", { id });
+  showToast("Bilan supprime");
 }
+
+async function loadAllData(showMessage=false) {
+  try {
+    const [suivi, mensurations] = await Promise.all([api("getSuivi",{}), api("getMensurations",{})]);
+    STATE.suivi = suivi || {};
+    STATE.mensurations = Array.isArray(mensurations) ? mensurations : [];
+    render();
+    if (showMessage) showToast("Donnees rafraichies");
+  } catch(e) {
+    STATE.suivi={}; STATE.mensurations=[]; render();
+  }
+}
+
+loadAllData(false);
+setInterval(() => {
+  const formOpen = STATE.addingMens || STATE.editingMens || STATE.openDay;
+  if (!formOpen) loadAllData(false);
+}, 30000);
 </script>
 </body>
 </html>
