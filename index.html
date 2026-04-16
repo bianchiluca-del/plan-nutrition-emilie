@@ -131,8 +131,9 @@ async function api(action, data) {
   return res.json();
 }
 
+// ── MODIFICATION 1 : sheetPlans ajouté dans STATE ─────────────────────────
 let STATE = {
-  tab: "plan", activePlan: "easyDay", suivi: {}, mensurations: [],
+  tab: "plan", activePlan: "easyDay", suivi: {}, mensurations: [], sheetPlans: {},
   calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
   openDay: null, openMeals: {}, proteinSelections: {}, proteinPanels: {}, variantB: {}, subGroupVariant: {}, editingMens: null, addingMens: false,
 };
@@ -192,7 +193,7 @@ function getM1(planKey, variant) {
   return null;
 }
 
-// ── PLANS ─────────────────────────────────────────────────────────────────
+// ── PLANS (fallback statique si le Sheet est inaccessible) ────────────────
 const PLANS = {
   easyDay: { label:"Easy Day", emoji:"🌿", meals:[
     { id:"m1", name:"Meal 1", time:"Matin - a jeun", color:"#fff8e1", accent:"#f57f17", border:"#ffe082",
@@ -381,7 +382,8 @@ function showToast(msg) {
 
 // ── RENDER PLAN ───────────────────────────────────────────────────────────
 function renderPlan() {
-  const plan = PLANS[STATE.activePlan];
+  // MODIFICATION 3 : lit le Sheet en priorité, fallback sur PLANS statique
+  const plan = STATE.sheetPlans[STATE.activePlan] || PLANS[STATE.activePlan];
   const totals = plan.meals.reduce((acc,meal)=>{
     let items4total;
     if (meal.variantKey) {
@@ -761,11 +763,17 @@ async function deleteMens(id) {
   showToast("Bilan supprime");
 }
 
+// MODIFICATION 2 : loadAllData charge aussi les plans depuis le Sheet
 async function loadAllData(showMessage=false) {
   try {
-    const [suivi, mensurations] = await Promise.all([api("getSuivi",{}), api("getMensurations",{})]);
+    const [suivi, mensurations, plans] = await Promise.all([
+      api("getSuivi",{}),
+      api("getMensurations",{}),
+      api("getPlans",{})
+    ]);
     STATE.suivi = suivi || {};
     STATE.mensurations = Array.isArray(mensurations) ? mensurations : [];
+    if (plans && !plans.error) STATE.sheetPlans = plans;
     render();
     if (showMessage) showToast("Donnees rafraichies");
   } catch(e) {
